@@ -5,12 +5,39 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+:root {
+    /* Light Mode Colors (Default) */
+    --bg-main: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #8e8e93;
+    --ai-bubble-bg: #f0f0f0;
+    --ai-bubble-text: #1a1a1a;
+    --user-bubble-bg: #6210CC; /* Purple from the image */
+    --user-bubble-text: #ffffff;
+    --border-color: #e5e5e5;
+    --input-bg: #f9f9f9;
+}
+
+[data-theme="dark"] {
+    /* Dark Mode Colors */
+    --bg-main: #121212;
+    --text-primary: #f5f5f5;
+    --text-secondary: #a0a0a5;
+    --ai-bubble-bg: #2c2c2e;
+    --ai-bubble-text: #f5f5f5;
+    --user-bubble-bg: #7a28e5;
+    --user-bubble-text: #ffffff;
+    --border-color: #333333;
+    --input-bg: #1c1c1e;
+}
+
 body {
-    background-color: #343541;
-    color: #ececf1;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
     height: 100vh;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .app-container {
@@ -18,139 +45,218 @@ body {
     flex-direction: column;
     height: 100%;
     width: 100%;
+    max-width: 800px; /* Constrains width on large screens */
+    position: relative;
 }
 
-/* Chat History Area */
+/* Header & Divider */
+.chat-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.date-divider {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+#theme-toggle {
+    position: absolute;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+}
+
+/* Chat Layout */
 .chat-history {
     flex-grow: 1;
     overflow-y: auto;
-    padding-bottom: 120px; /* Space for input */
-}
-
-.message {
-    width: 100%;
-    padding: 24px 20px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-}
-
-.message.ai-message {
-    background-color: #444654;
-}
-
-.message.user-message {
-    background-color: #343541;
-}
-
-.message-inner {
-    max-width: 800px;
-    margin: 0 auto;
+    padding: 20px 16px 140px 16px;
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 4px;
+.message-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 14px;
-    flex-shrink: 0;
+    flex-direction: column;
+    max-width: 75%;
+}
+
+.sender-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    margin-left: 4px;
+}
+
+.bubble-and-time {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.timestamp {
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    margin-bottom: 2px;
+}
+
+.bubble {
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 15px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+/* AI Message Styling */
+.ai-message-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.ai-bubble {
+    background-color: var(--ai-bubble-bg);
+    color: var(--ai-bubble-text);
+    border-bottom-left-radius: 4px;
 }
 
 .ai-avatar {
-    background-color: #10a37f;
-    color: white;
+    width: 28px;
+    height: 28px;
+    color: var(--user-bubble-bg);
+    margin-top: 20px;
+    flex-shrink: 0;
 }
 
-.user-avatar {
-    background-color: #5436da;
-    color: white;
+/* User Message Styling */
+.user-message-row {
+    display: flex;
+    justify-content: flex-end;
 }
 
-.content {
-    line-height: 1.6;
-    font-size: 16px;
-    white-space: pre-wrap;
-    align-self: center;
+.user-message-row .bubble-and-time {
+    flex-direction: row-reverse;
 }
 
-/* Input Area */
+.user-bubble {
+    background-color: var(--user-bubble-bg);
+    color: var(--user-bubble-text);
+    border-bottom-right-radius: 4px;
+}
+
+/* Typing Indicator (3 Dots) */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 6px 4px;
+    align-items: center;
+    height: 24px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--text-secondary);
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+/* Footer & Input Area */
+.footer-branding {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 8px 0;
+    position: fixed;
+    bottom: 80px;
+    width: 100%;
+    max-width: 800px;
+    background: transparent;
+}
+
 .input-container {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background: linear-gradient(180deg, rgba(53,55,64,0), #353740 58.85%);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    max-width: 800px;
+    background-color: var(--bg-main);
+    padding: 12px 16px 24px 16px;
+    border-top: 1px solid var(--border-color);
 }
 
 .input-box {
-    max-width: 800px;
-    width: 100%;
-    position: relative;
     display: flex;
     align-items: center;
-    background-color: #40414f;
-    border: 1px solid rgba(32,33,35,0.5);
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 4px 8px;
 }
 
 textarea {
-    width: 100%;
+    flex-grow: 1;
     background: transparent;
     border: none;
-    color: white;
-    padding: 16px 48px 16px 16px;
-    font-size: 16px;
+    color: var(--text-primary);
+    padding: 10px 12px;
+    font-size: 15px;
     resize: none;
     outline: none;
-    max-height: 200px;
+    max-height: 100px;
 }
 
 textarea::placeholder {
-    color: #8e8ea0;
+    color: var(--text-secondary);
 }
 
 #send-btn {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    background: transparent;
+    background: var(--user-bubble-bg);
     border: none;
-    color: #8e8ea0;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
 }
 
 #send-btn:hover {
-    color: #10a37f;
+    opacity: 0.9;
 }
 
 #send-btn:disabled {
-    color: #8e8ea0;
-    opacity: 0.5;
+    background: var(--text-secondary);
     cursor: not-allowed;
 }
 
-svg {
-    width: 20px;
-    height: 20px;
-}
-
-.disclaimer {
-    font-size: 12px;
-    color: #c5c5d2;
-    margin-top: 12px;
-    text-align: center;
-}
-
-.loading {
-    opacity: 0.6;
-    font-style: italic;
+#send-btn svg {
+    width: 18px;
+    height: 18px;
+    margin-left: 2px; /* Centers the paper airplane visually */
 }

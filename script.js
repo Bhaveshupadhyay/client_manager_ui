@@ -1,49 +1,75 @@
 const chatHistory = document.getElementById('chat-history');
 const chatInput = document.getElementById('chat-input');
 const sendBtn = document.getElementById('send-btn');
+const themeToggle = document.getElementById('theme-toggle');
+const sunIcon = document.getElementById('sun-icon');
+const moonIcon = document.getElementById('moon-icon');
 
 // --- Configuration ---
-const API_URL = 'https://clientmanger.tech/api/v1/chat/';
+// Make sure to match this with your secure FastAPI setup
+const API_URL = 'https://clientmanger.tech/api/v1/chat/'; 
 const API_KEY = '1234';
-const CLIENT_NAME = 'WebClient'; // Replace with dynamic logic if needed
+const CLIENT_NAME = 'WebClient';
+
+// --- Theme Toggling ---
+themeToggle.addEventListener('click', () => {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+        document.body.removeAttribute('data-theme');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+    } else {
+        document.body.setAttribute('data-theme', 'dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+    }
+});
 
 // --- Event Listeners ---
 sendBtn.addEventListener('click', handleSend);
 
 chatInput.addEventListener('keydown', (e) => {
-    // Submit on Enter (allow Shift+Enter for new lines)
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         handleSend();
     }
 });
 
-// Auto-resize textarea
 chatInput.addEventListener('input', function() {
     this.style.height = 'auto';
     this.style.height = (this.scrollHeight) + 'px';
 });
 
-// --- Core Logic ---
+// --- Helpers ---
+function getCurrentTime() {
+    const now = new Date();
+    return now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
+
+function scrollToBottom() {
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+function escapeHTML(str) {
+    const p = document.createElement('p');
+    p.appendChild(document.createTextNode(str));
+    return p.innerHTML;
+}
+
+// --- Chat Logic ---
 async function handleSend() {
     const text = chatInput.value.trim();
     if (!text) return;
 
-    // 1. Render User Message
-    appendMessage(text, 'user');
+    appendUserMessage(text);
     
-    // Clear input & reset height
     chatInput.value = '';
     chatInput.style.height = 'auto';
-    
-    // 2. Render Loading State
-    const loadingId = appendLoading();
-    
-    // Disable button to prevent spam
     sendBtn.disabled = true;
 
+    const loadingId = appendTypingIndicator();
+
     try {
-        // 3. Make API Call
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
@@ -57,77 +83,81 @@ async function handleSend() {
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
         
-        // 4. Remove loading state & Render AI Response
-        removeElement(loadingId);
-        appendMessage(data.message, 'ai');
+        document.getElementById(loadingId).remove();
+        appendAIMessage(data.message);
 
     } catch (error) {
         console.error('Error fetching chat response:', error);
-        removeElement(loadingId);
-        appendMessage('Error: Could not connect to the API. Please check the console.', 'ai');
+        document.getElementById(loadingId).remove();
+        appendAIMessage("Sorry, I'm having trouble connecting right now.");
     } finally {
-        // Re-enable button
         sendBtn.disabled = false;
     }
 }
 
-// --- UI Helpers ---
-function appendMessage(text, sender) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', `${sender}-message`);
-    
-    const avatarLetter = sender === 'ai' ? 'AI' : 'U';
-    const avatarClass = sender === 'ai' ? 'ai-avatar' : 'user-avatar';
-
-    messageDiv.innerHTML = `
-        <div class="message-inner">
-            <div class="avatar ${avatarClass}">${avatarLetter}</div>
-            <div class="content">${escapeHTML(text)}</div>
+// --- UI Rendering ---
+function appendUserMessage(text) {
+    const time = getCurrentTime();
+    const html = `
+        <div class="user-message-row">
+            <div class="message-wrapper">
+                <div class="bubble-and-time">
+                    <div class="bubble user-bubble">${escapeHTML(text)}</div>
+                    <span class="timestamp">${time}</span>
+                </div>
+            </div>
         </div>
     `;
-    
-    chatHistory.appendChild(messageDiv);
+    chatHistory.insertAdjacentHTML('beforeend', html);
     scrollToBottom();
 }
 
-function appendLoading() {
-    const id = 'loading-' + Date.now();
-    const loadingDiv = document.createElement('div');
-    loadingDiv.id = id;
-    loadingDiv.classList.add('message', 'ai-message', 'loading');
-    
-    loadingDiv.innerHTML = `
-        <div class="message-inner">
-            <div class="avatar ai-avatar">AI</div>
-            <div class="content">Thinking...</div>
+function appendAIMessage(text) {
+    const time = getCurrentTime();
+    const html = `
+        <div class="message ai-message-row">
+            <div class="avatar ai-avatar">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+            </div>
+            <div class="message-wrapper">
+                <span class="sender-name">AI Assistant</span>
+                <div class="bubble-and-time">
+                    <div class="bubble ai-bubble">${escapeHTML(text)}</div>
+                    <span class="timestamp">${time}</span>
+                </div>
+            </div>
         </div>
     `;
-    
-    chatHistory.appendChild(loadingDiv);
+    chatHistory.insertAdjacentHTML('beforeend', html);
+    scrollToBottom();
+}
+
+function appendTypingIndicator() {
+    const id = 'typing-' + Date.now();
+    const html = `
+        <div id="${id}" class="message ai-message-row">
+            <div class="avatar ai-avatar">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+            </div>
+            <div class="message-wrapper">
+                <span class="sender-name">AI Assistant</span>
+                <div class="bubble-and-time">
+                    <div class="bubble ai-bubble">
+                        <div class="typing-indicator">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    chatHistory.insertAdjacentHTML('beforeend', html);
     scrollToBottom();
     return id;
-}
-
-function removeElement(id) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.remove();
-    }
-}
-
-function scrollToBottom() {
-    chatHistory.scrollTop = chatHistory.scrollHeight;
-}
-
-// Prevents XSS attacks by sanitizing text
-function escapeHTML(str) {
-    const p = document.createElement('p');
-    p.appendChild(document.createTextNode(str));
-    return p.innerHTML;
 }

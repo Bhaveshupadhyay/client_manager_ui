@@ -3,33 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat Assistant</title>
+    <title>AI Client Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
+        <!-- Header / Theme Toggle -->
+        <header class="chat-header">
+            <div class="date-divider">Today</div>
+            <button id="theme-toggle" title="Toggle Dark/Light Mode">
+                <svg id="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+        </header>
+
+        <!-- Chat History -->
         <div class="chat-history" id="chat-history">
-            <div class="message ai-message">
-                <div class="message-inner">
-                    <div class="avatar ai-avatar">AI</div>
-                    <div class="content">
-                        Hello! I'm ready to chat. What are you looking to build?
+            <!-- Initial Message -->
+            <div class="message ai-message-row">
+                <div class="avatar ai-avatar">
+                    <!-- Purple shape from image -->
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+                </div>
+                <div class="message-wrapper">
+                    <span class="sender-name">AI Assistant</span>
+                    <div class="bubble-and-time">
+                        <div class="bubble ai-bubble">
+                            Hi! 👋 I'll be your guide today. What interests you about our services?
+                        </div>
+                        <span class="timestamp">Just now</span>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="footer-branding">
+            Ai powered client manager
+        </div>
+
+        <!-- Input Area -->
         <div class="input-container">
             <div class="input-box">
-                <textarea id="chat-input" placeholder="Send a message..." rows="1"></textarea>
+                <textarea id="chat-input" placeholder="Type a message..." rows="1"></textarea>
                 <button id="send-btn" title="Send message">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
                 </button>
             </div>
-            <div class="disclaimer">AI can make mistakes. Consider verifying important information.</div>
         </div>
     </div>
 
