@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="chat-history" id="chat-history">
+            <div class="message ai-message">
+                <div class="message-inner">
+                    <div class="avatar ai-avatar">AI</div>
+                    <div class="content">
+                        Hello! I'm ready to chat. What are you looking to build?
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <div class="input-box">
+                <textarea id="chat-input" placeholder="Send a message..." rows="1"></textarea>
+                <button id="send-btn" title="Send message">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="disclaimer">AI can make mistakes. Consider verifying important information.</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

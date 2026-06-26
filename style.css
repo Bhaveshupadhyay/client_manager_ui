@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #343541;
+    color: #ececf1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+/* Chat History Area */
+.chat-history {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 120px; /* Space for input */
+}
+
+.message {
+    width: 100%;
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.message.ai-message {
+    background-color: #444654;
+}
+
+.message.user-message {
+    background-color: #343541;
+}
+
+.message-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    gap: 20px;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.ai-avatar {
+    background-color: #10a37f;
+    color: white;
+}
+
+.user-avatar {
+    background-color: #5436da;
+    color: white;
+}
+
+.content {
+    line-height: 1.6;
+    font-size: 16px;
+    white-space: pre-wrap;
+    align-self: center;
+}
+
+/* Input Area */
+.input-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(53,55,64,0), #353740 58.85%);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-box {
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #40414f;
+    border: 1px solid rgba(32,33,35,0.5);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 16px 48px 16px 16px;
+    font-size: 16px;
+    resize: none;
+    outline: none;
+    max-height: 200px;
+}
+
+textarea::placeholder {
+    color: #8e8ea0;
+}
+
+#send-btn {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    background: transparent;
+    border: none;
+    color: #8e8ea0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+#send-btn:hover {
+    color: #10a37f;
+}
+
+#send-btn:disabled {
+    color: #8e8ea0;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+svg {
+    width: 20px;
+    height: 20px;
+}
+
+.disclaimer {
+    font-size: 12px;
+    color: #c5c5d2;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.loading {
+    opacity: 0.6;
+    font-style: italic;
+}
