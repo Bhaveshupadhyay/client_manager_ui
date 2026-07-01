@@ -11,6 +11,11 @@ const API_URL = 'https://clientmanger.tech/api/v1/chat/';
 const API_KEY = '1234';
 const CLIENT_NAME = 'WebClient';
 
+window.addEventListener('DOMContentLoaded', () => {
+    fetch('https://clientmanger.tech/')
+        .then(() => console.log("Server pinged successfully."))
+        .catch((e) => console.log("Ping sent (ignoring network errors while server boots)."));
+});
 // --- Theme Toggling ---
 themeToggle.addEventListener('click', () => {
     const isDark = document.body.getAttribute('data-theme') === 'dark';
