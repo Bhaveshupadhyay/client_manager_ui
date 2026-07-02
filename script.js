@@ -84,7 +84,8 @@ async function handleSend() {
             },
             body: JSON.stringify({
                 message: text,
-                client_name: CLIENT_NAME
+                client_name: CLIENT_NAME,
+                project_id: "fi_us_2026_4528"
             })
         });
 
