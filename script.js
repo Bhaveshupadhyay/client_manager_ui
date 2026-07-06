@@ -111,6 +111,7 @@ function appendUserMessage(text) {
     const html = `
         <div class="user-message-row">
             <div class="message-wrapper">
+                <span class="sender-name">You</span>
                 <div class="bubble-and-time">
                     <div class="bubble user-bubble">${escapeHTML(text)}</div>
                     <span class="timestamp">${time}</span>
@@ -130,7 +131,7 @@ function appendAIMessage(text) {
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/></svg>
             </div>
             <div class="message-wrapper">
-                <span class="sender-name">Bhavesh</span>
+                <span class="sender-name">AI Project Manager</span>
                 <div class="bubble-and-time">
                     <div class="bubble ai-bubble">${escapeHTML(text)}</div>
                     <span class="timestamp">${time}</span>
@@ -150,7 +151,7 @@ function appendTypingIndicator() {
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/></svg>
             </div>
             <div class="message-wrapper">
-                <span class="sender-name">Bhavesh</span>
+                <span class="sender-name">AI Project Manager</span>
                 <div class="bubble-and-time">
                     <div class="bubble ai-bubble">
                         <div class="typing-indicator">
