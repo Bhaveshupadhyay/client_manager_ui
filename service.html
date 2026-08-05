@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Services - AI Client Manager</title>
+    <title>Digital Services & Capabilities - AI Client Manager</title>
+    <meta name="description" content="Explore our digital development services including Web, Mobile, AI Solutions, Enterprise Systems, and MERN stack architectures.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Background elements -->
+    <!-- Background Decorators -->
     <div class="bg-decorations">
         <div class="bg-mesh"></div>
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
     <!-- Sticky Navigation Header -->
@@ -19,20 +21,23 @@
         <div class="header-content">
             <a href="index.html" class="logo-container">
                 <div class="logo-icon">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                         <path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/>
                     </svg>
                 </div>
-                <span class="logo-text">AI Client Manager</span>
+                <div class="logo-text-wrapper">
+                    <span class="logo-text">AI Client Manager</span>
+                    <span class="logo-subtitle">Capabilities</span>
+                </div>
             </a>
             
             <nav class="main-nav" id="main-nav">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="service.html" class="active">Services</a></li>
-                    <li><a href="portfolio.html">Portfolio</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="mailto:bhaveshupadhyay929@gmail.com">Contact</a></li>
+                    <li><a href="index.html"><span class="nav-icon">💬</span> Workspace</a></li>
+                    <li><a href="service.html" class="active"><span class="nav-icon">⚡</span> Services</a></li>
+                    <li><a href="portfolio.html"><span class="nav-icon">🚀</span> Portfolio</a></li>
+                    <li><a href="about.html"><span class="nav-icon">🏛️</span> About</a></li>
+                    <li><a href="contact.html"><span class="nav-icon">📬</span> Contact</a></li>
                 </ul>
             </nav>
 
@@ -42,7 +47,7 @@
                     <span>AI Assistant</span>
                 </div>
                 <div class="theme-toggle">
-                    <button id="theme-toggle" title="Toggle Theme">
+                    <button id="theme-toggle" title="Toggle Light/Dark Theme">
                         <svg id="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                         <svg id="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                     </button>
@@ -55,151 +60,313 @@
     <!-- Services Main Container -->
     <main class="page-container">
         <section class="page-hero">
-            <h1>Our Digital Capabilities</h1>
-            <p>We combine advanced AI intelligence, robust modern frameworks, and user-centric designs to engineer solutions that empower companies globally.</p>
+            <div class="hero-badge">Architectural Excellence</div>
+            <h1>Engineered Solutions & Services</h1>
+            <p>We combine generative AI intelligence, cloud-native frameworks, and user-centric aesthetics to engineer digital products that scale effortlessly.</p>
         </section>
 
-        <section class="services-grid">
+        <!-- Service Category Filter Tabs -->
+        <div class="filter-tabs-container">
+            <div class="filter-tabs" id="service-filter-tabs">
+                <button class="filter-tab active" data-category="all">All Services (12)</button>
+                <button class="filter-tab" data-category="web">Web & SaaS</button>
+                <button class="filter-tab" data-category="mobile">Mobile Apps</button>
+                <button class="filter-tab" data-category="ai">AI & ML</button>
+                <button class="filter-tab" data-category="backend">Backend & APIs</button>
+            </div>
+        </div>
+
+        <!-- Services Grid -->
+        <section class="services-grid" id="services-grid">
             
             <!-- Service Card 1 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            <div class="service-card" data-category="web">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-1">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    </div>
+                    <span class="service-category-badge">Web & SaaS</span>
                 </div>
-                <h3>Web Development</h3>
-                <p>We build production-ready, lightning-fast web applications designed with high performance, elegant UX, and clean codebase structures.</p>
+                <h3>Web Application Engineering</h3>
+                <p>High-speed, production-grade Web Applications designed with Next.js, React, and modular styling. Optimized for Lighthouse 100 performance scores.</p>
+                <ul class="service-features">
+                    <li>Server-Side Rendering (SSR) & SSG</li>
+                    <li>Sub-second interaction response</li>
+                    <li>Enterprise SEO & Metadata</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20Web%20Application%20Engineering%20project" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 2 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            <div class="service-card" data-category="mobile">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                    </div>
+                    <span class="service-category-badge">Mobile</span>
                 </div>
-                <h3>Mobile App Development</h3>
-                <p>Cross-platform iOS and Android mobile solutions tailored to load instantly, feel natural, and deliver high user engagement rates.</p>
+                <h3>Cross-Platform Mobile Apps</h3>
+                <p>Native iOS & Android mobile applications built using React Native and Flutter, delivering 60fps animations and offline sync capabilities.</p>
+                <ul class="service-features">
+                    <li>Native Device Features (Biometrics, Push)</li>
+                    <li>Unified iOS & Android Codebase</li>
+                    <li>Offline Store & Sync Engine</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20Cross-Platform%20Mobile%20App" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 3 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <div class="service-card" data-category="ai">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-3">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <span class="service-category-badge">AI & ML</span>
                 </div>
-                <h3>AI Solutions</h3>
-                <p>Deploy large language models, custom NLP agents, and machine learning scoring vectors directly into your digital workspace workflows.</p>
+                <h3>AI & LLM Integration</h3>
+                <p>Deploy custom RAG pipelines, fine-tuned LLM agents, vector databases, and automated document analysis models directly into your product workflows.</p>
+                <ul class="service-features">
+                    <li>RAG Architecture with Pinecone/Qdrant</li>
+                    <li>OpenAI, Anthropic & Llama Indexing</li>
+                    <li>Real-Time Streaming Output</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20an%20AI%20and%20LLM%20Integration%20system" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 4 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            <div class="service-card" data-category="web">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-4">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                    </div>
+                    <span class="service-category-badge">Enterprise</span>
                 </div>
-                <h3>Custom Software</h3>
-                <p>Custom-fit enterprise back-offices, inventory workflows, and complex dashboards architected exactly to your business strategy.</p>
+                <h3>Custom SaaS & Dashboard Architecture</h3>
+                <p>Multi-tenant enterprise back-offices, administrative command centers, role-based security access controls, and custom telemetry metrics.</p>
+                <ul class="service-features">
+                    <li>Role-Based Access Control (RBAC)</li>
+                    <li>Stripe SaaS Billing & Invoicing</li>
+                    <li>Real-time Data Visualizations</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20Custom%20SaaS%20Dashboard%20Architecture" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 5 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>
+            <div class="service-card" data-category="web">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-1">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>
+                    </div>
+                    <span class="service-category-badge">Full Stack</span>
                 </div>
-                <h3>MERN Stack Development</h3>
-                <p>Robust React frontends powered by scalable Express API layers, MongoDB clusters, and Node servers for end-to-end efficiency.</p>
+                <h3>MERN & Full-Stack Solutions</h3>
+                <p>Robust React interfaces backed by Express/FastAPI API layers, MongoDB/PostgreSQL database clusters, and Node event loops.</p>
+                <ul class="service-features">
+                    <li>Clean Repository-Pattern Architecture</li>
+                    <li>High-Concurrency Database Schemas</li>
+                    <li>Automated CI/CD Pipelines</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20Full-Stack%20MERN%20Application" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 6 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16.5 9.4 7.55 4.24a1.79 1.79 0 0 0-2.5 1.55v12.42a1.79 1.79 0 0 0 2.5 1.55L16.5 14.6a1.78 1.78 0 0 0 0-3.2z"></path></svg>
+            <div class="service-card" data-category="web">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    </div>
+                    <span class="service-category-badge">Frontend</span>
                 </div>
-                <h3>React Development</h3>
-                <p>Component-driven web applications utilizing the latest hooks, clean reactive state updates, and micro-interaction libraries.</p>
+                <h3>Modern React Frontend Suite</h3>
+                <p>Component-driven web applications leveraging modern hooks, global state managers (Zustand/Redux), dynamic dark mode, and smooth transitions.</p>
+                <ul class="service-features">
+                    <li>Custom CSS Design Tokens System</li>
+                    <li>Framer Motion Micro-Animations</li>
+                    <li>WCAG 2.1 Accessibility Compliant</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20Modern%20React%20Frontend" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 7 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <div class="service-card" data-category="backend">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-3">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+                    </div>
+                    <span class="service-category-badge">Backend</span>
                 </div>
-                <h3>Node.js Backend</h3>
-                <p>Highly parallel, event-driven backends designed to manage complex logic, database connections, and microservices.</p>
+                <h3>FastAPI & Node.js Microservices</h3>
+                <p>Asynchronous, high-throughput backend services designed to process high request volume with low latency and zero memory leaks.</p>
+                <ul class="service-features">
+                    <li>Async Python & Express runtime</li>
+                    <li>Swagger/OpenAPI Automated Spec</li>
+                    <li>Redis Caching & Pub/Sub</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20FastAPI%20Node.js%20Backend" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 8 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            <div class="service-card" data-category="backend">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-4">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    </div>
+                    <span class="service-category-badge">APIs</span>
                 </div>
-                <h3>API Development</h3>
-                <p>Secure, RESTful or GraphQL endpoints engineered with structured schemas, token authentication, and optimized payloads.</p>
+                <h3>REST & GraphQL API Gateways</h3>
+                <p>Secure, well-documented API endpoints engineered with JWT validation, rate limiting, granular permission checks, and payload compression.</p>
+                <ul class="service-features">
+                    <li>OAuth2 & API Key Authentication</li>
+                    <li>Rate Limiting & Threat Protection</li>
+                    <li>GraphQL Query Optimization</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20an%20API%20Gateway%20project" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 9 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <div class="service-card" data-category="web">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-1">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <span class="service-category-badge">Design</span>
                 </div>
-                <h3>UI/UX Design</h3>
-                <p>Gorgeous wireframes, responsive grids, high-fidelity prototypes, and sleek modern assets tailored to hook user attention.</p>
+                <h3>UI/UX & Design Systems</h3>
+                <p>High-fidelity Figma prototypes, custom component libraries, color design systems, and responsive layout systems that elevate brand identity.</p>
+                <ul class="service-features">
+                    <li>Interactive Prototypes</li>
+                    <li>Unified CSS Design Tokens</li>
+                    <li>Pixel-perfect Responsive Grids</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20UI/UX%20Design%20System" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 10 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+            <div class="service-card" data-category="backend">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+                    </div>
+                    <span class="service-category-badge">Cloud</span>
                 </div>
-                <h3>Cloud Deployment</h3>
-                <p>Deploy containers, CI/CD automated test pipelines, load balancers, and global CDNs on AWS, GCP, Vercel, or Netlify.</p>
+                <h3>Cloud DevOps & AWS/GCP Deployment</h3>
+                <p>Automated cloud infrastructure deployment on AWS, Google Cloud, or Vercel using Terraform, Docker containers, and Kubernetes clusters.</p>
+                <ul class="service-features">
+                    <li>Docker Containerization</li>
+                    <li>Automated SSL & Custom Domains</li>
+                    <li>Zero-Downtime Rolling Deploys</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20Cloud%20DevOps%20Deployment" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 11 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+            <div class="service-card" data-category="ai">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-3">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    </div>
+                    <span class="service-category-badge">Analytics</span>
                 </div>
-                <h3>Maintenance & Support</h3>
-                <p>Continuous uptime tracking, bug resolutions, dependencies updates, and feature scaling so your system always operates cleanly.</p>
+                <h3>Real-Time Data Analytics</h3>
+                <p>Live streaming data dashboards, event processing queues, user tracking telemetry, and interactive Chart.js/D3.js visualization widgets.</p>
+                <ul class="service-features">
+                    <li>WebSocket Live Data Feed</li>
+                    <li>Custom Charting Widgets</li>
+                    <li>Automated Email Reporting</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20Real-Time%20Data%20Analytics%20Dashboard" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
 
             <!-- Service Card 12 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <div class="service-card" data-category="mobile">
+                <div class="service-card-header">
+                    <div class="service-icon icon-gradient-4">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    </div>
+                    <span class="service-category-badge">E-Commerce</span>
                 </div>
-                <h3>AI Automation</h3>
-                <p>Automate client messaging systems, support ticket routing, database checks, and content generations using state-of-the-art AI steps.</p>
+                <h3>Headless E-Commerce Engines</h3>
+                <p>Next-generation online store engines powered by Shopify Storefront API, Stripe payments, algolia instant search, and headless CMS integrations.</p>
+                <ul class="service-features">
+                    <li>Sub-second Product Search</li>
+                    <li>Apple Pay & Stripe Integration</li>
+                    <li>Custom Checkout Workflows</li>
+                </ul>
+                <div class="service-footer">
+                    <a href="index.html?prompt=I%20want%20to%20estimate%20a%20Headless%20E-Commerce%20Engine" class="service-cta-btn">Estimate with AI →</a>
+                </div>
             </div>
+        </section>
 
+        <!-- CTA Section -->
+        <section class="banner-cta">
+            <div class="cta-content">
+                <h2>Have a custom software concept in mind?</h2>
+                <p>Our AI Scope Architect can analyze your requirements, structure the timeline, and generate an instant proposal quote in under 2 minutes.</p>
+                <a href="index.html" class="cta-primary-btn">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5z"/></svg>
+                    Launch AI Workspace
+                </a>
+            </div>
         </section>
     </main>
 
-    <!-- Modern Footer -->
+    <!-- Footer -->
     <footer class="main-footer">
         <div class="footer-content">
             <div class="footer-brand">
-                <h3>AI Client Manager</h3>
-                <p>Our platform automates client scope collection and delivers high-fidelity project estimations in seconds. Design, calculate, and construct projects with modern SaaS workflows.</p>
+                <div class="logo-container" style="margin-bottom: 12px;">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5z"/></svg>
+                    </div>
+                    <span class="logo-text">AI Client Manager</span>
+                </div>
+                <p>Automating scope extraction, project cost modeling, and proposal generation using artificial intelligence and modern SaaS design standards.</p>
             </div>
             <div class="footer-col">
-                <h4>Explore</h4>
+                <h4>Navigation</h4>
                 <ul>
-                    <li><a href="index.html">Home (Chat)</a></li>
-                    <li><a href="service.html">Services</a></li>
-                    <li><a href="portfolio.html">Portfolio</a></li>
-                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="index.html">AI Workspace</a></li>
+                    <li><a href="service.html">Services Grid</a></li>
+                    <li><a href="portfolio.html">Featured Portfolio</a></li>
+                    <li><a href="about.html">About Agency</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Contact</h4>
+                <h4>Direct Contact</h4>
                 <ul>
                     <li><a href="mailto:bhaveshupadhyay929@gmail.com">bhaveshupadhyay929@gmail.com</a></li>
-                    <li><a href="mailto:bhaveshupadhyay929@gmail.com">Get Quote Estimate</a></li>
+                    <li><a href="contact.html">Contact Dashboard</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Legal</h4>
+                <h4>Capabilities</h4>
                 <ul>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="service.html">SaaS Engineering</a></li>
+                    <li><a href="service.html">AI Agent Systems</a></li>
+                    <li><a href="service.html">FastAPI & Node APIs</a></li>
                 </ul>
             </div>
         </div>
@@ -211,9 +378,6 @@
                 </a>
                 <a href="https://linkedin.com" target="_blank" title="LinkedIn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                </a>
-                <a href="https://twitter.com" target="_blank" title="Twitter">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
                 </a>
             </div>
         </div>
