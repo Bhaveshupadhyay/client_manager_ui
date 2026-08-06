@@ -350,7 +350,7 @@ function parseSummaryText(text, isUser) {
     }
 
     // 2. Identify Budget Range
-    const budgetRegex = /\$?\d{1,3}(?:,\d{3})*\s*(?:k|thousand|dollars|\$)?/gi;
+    const budgetRegex = /\$?\d+(?:,\d{3})*\s*(?:k|thousand|dollars|\$)?/gi;
     const matches = text.match(budgetRegex);
     if (matches) {
         const potentialBudgets = matches.filter(b => {
@@ -549,7 +549,9 @@ function showToast(htmlMsg) {
 
 // Proposal PDF Generator
 function generateProposalPDF() {
-    const filename = `Proposal_${activeSummary.name.replace(/\s+/g, '_') || 'Project'}.pdf`;
+    const rawName = activeSummary.name;
+    const cleanName = (!rawName || rawName === '—') ? 'Project' : rawName.replace(/\s+/g, '_');
+    const filename = `Proposal_${cleanName}.pdf`;
     const element = document.createElement('a');
     const mockContent = `
 ========================================
@@ -705,9 +707,15 @@ function renderSessionList() {
     
     sortedKeys.forEach((key, index) => {
         const session = chatSessions[key];
-        const displayTitle = session.summary.name !== '—' 
-            ? session.summary.name 
-            : (session.messages && session.messages[1] ? session.messages[1].text.substring(0, 22) + '...' : `Chat Session ${index + 1}`);
+        let displayTitle = `Chat Session ${index + 1}`;
+        if (session.summary && session.summary.name && session.summary.name !== '—') {
+            displayTitle = session.summary.name;
+        } else if (session.messages && session.messages[1] && session.messages[1].text) {
+            const plainText = session.messages[1].text.replace(/<[^>]*>/g, '').trim();
+            if (plainText) {
+                displayTitle = plainText.length > 22 ? plainText.substring(0, 22) + '...' : plainText;
+            }
+        }
 
         const isActive = key === currentSessionId;
         const activeClass = isActive ? 'active' : '';
@@ -763,16 +771,19 @@ function setupStatsCounters() {
     if (statNums.length === 0) return;
 
     statNums.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-target'));
+        const target = parseInt(counter.getAttribute('data-target'), 10);
+        if (isNaN(target) || !isFinite(target) || target <= 0) return;
+
+        const suffix = counter.getAttribute('data-suffix') || '+';
         let current = 0;
-        const increment = Math.ceil(target / 40);
+        const increment = Math.max(1, Math.ceil(target / 40));
 
         const updateCounter = () => {
             current += increment;
             if (current >= target) {
-                counter.textContent = target + (counter.getAttribute('data-target') === '99' ? '%' : '+');
+                counter.textContent = target + suffix;
             } else {
-                counter.textContent = current + '+';
+                counter.textContent = current + suffix;
                 requestAnimationFrame(updateCounter);
             }
         };
@@ -787,8 +798,26 @@ function setupContactForm() {
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const name = document.getElementById('contact-name').value;
-        showToast(`✅ Thank you <strong>${escapeHTML(name)}</strong>! Your inquiry has been logged. Our lead architect will reach out shortly.`);
+        const nameInput = document.getElementById('contact-name');
+        const emailInput = document.getElementById('contact-email');
+        const categoryInput = document.getElementById('contact-category');
+        const budgetInput = document.getElementById('contact-budget');
+        const messageInput = document.getElementById('contact-message');
+
+        const name = nameInput ? nameInput.value.trim() : '';
+        const email = emailInput ? emailInput.value.trim() : '';
+        const category = categoryInput ? categoryInput.value : '';
+        const budget = budgetInput ? budgetInput.value : '';
+        const message = messageInput ? messageInput.value.trim() : '';
+
+        const subject = encodeURIComponent(`Project Inquiry from ${name || 'Client'} [${category}]`);
+        const body = encodeURIComponent(
+            `Name: ${name}\nEmail: ${email}\nCategory: ${category}\nTarget Budget: ${budget}\n\nProject Requirements:\n${message}`
+        );
+
+        window.location.href = `mailto:bhaveshupadhyay929@gmail.com?subject=${subject}&body=${body}`;
+
+        showToast(`✅ Thank you <strong>${escapeHTML(name || 'there')}</strong>! Opening your mail client to deliver inquiry...`);
         form.reset();
     });
 }
