@@ -13,6 +13,10 @@ const moonIcon = document.getElementById('moon-icon');
 const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
 const mainNav = document.getElementById('main-nav');
 const leftSidebar = document.getElementById('left-sidebar');
+const clearChatBtn = document.getElementById('clear-chat-btn');
+const filePreviewChip = document.getElementById('file-preview-chip');
+const filePreviewName = document.getElementById('file-preview-name');
+const removeFileBtn = document.getElementById('remove-file-btn');
 
 // Project Summary Elements
 const sumName = document.getElementById('summary-name');
@@ -24,6 +28,8 @@ const sumTimeline = document.getElementById('summary-timeline');
 const sumEstimate = document.getElementById('summary-estimate');
 const sumStatus = document.getElementById('summary-status');
 const downloadBtn = document.getElementById('download-proposal-btn');
+const scopeProgressPercent = document.getElementById('scope-progress-percent');
+const scopeProgressFill = document.getElementById('scope-progress-fill');
 
 // --- Configuration ---
 const API_URL = 'https://clientmanger.tech/api/v1/chat/'; 
@@ -47,10 +53,10 @@ let activeSummary = {
 
 // --- Initial Setup on DOM Load ---
 window.addEventListener('DOMContentLoaded', () => {
-    // 1. Wake the server (Ping)
+    // 1. Ping Server
     fetch('https://clientmanger.tech/')
         .then(() => console.log("Server pinged successfully."))
-        .catch((e) => console.log("Ping sent (ignoring network errors during server wake-up)."));
+        .catch((e) => console.log("Ping sent (ignoring network errors)."));
 
     // 2. Initialize Theme
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -64,18 +70,36 @@ window.addEventListener('DOMContentLoaded', () => {
         if (moonIcon) moonIcon.style.display = 'block';
     }
 
-    // 3. Load Chat History from Local Storage (Home Page only)
+    // 3. Load Chat History from Local Storage (Home Workspace)
     if (chatHistory) {
         loadSessionsFromStorage();
-        // Start a fresh session if none exists
         if (Object.keys(chatSessions).length === 0) {
             startNewSession();
         } else {
-            // Load the most recent session
             const sortedSessions = Object.keys(chatSessions).sort().reverse();
             loadSession(sortedSessions[0]);
         }
+
+        // Check for URL parameter ?prompt=...
+        const urlParams = new URLSearchParams(window.location.search);
+        const prefilledPrompt = urlParams.get('prompt');
+        if (prefilledPrompt && chatInput) {
+            chatInput.value = decodeURIComponent(prefilledPrompt);
+            setTimeout(() => {
+                handleSend();
+            }, 600);
+        }
     }
+
+    // 4. Setup Filter Tabs (Services & Portfolio)
+    setupFilterTabs('service-filter-tabs', 'services-grid');
+    setupFilterTabs('portfolio-filter-tabs', 'portfolio-grid');
+
+    // 5. Setup Animated Stats Counters (About Page)
+    setupStatsCounters();
+
+    // 6. Setup Contact Form Handler
+    setupContactForm();
 });
 
 // --- Theme Toggle Logic ---
@@ -104,7 +128,6 @@ if (mobileMenuToggle) {
     });
 }
 
-// Close sidebar on tapping main chat area in mobile view
 if (chatHistory) {
     chatHistory.addEventListener('click', () => {
         if (leftSidebar && leftSidebar.classList.contains('open')) {
@@ -113,22 +136,23 @@ if (chatHistory) {
     });
 }
 
-// --- Chat Window Logic (Executes only on index.html) ---
+// --- Chat Window Logic (Executes on index.html) ---
 if (chatHistory) {
+    if (sendBtn) sendBtn.addEventListener('click', handleSend);
+    
+    if (chatInput) {
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
 
-    // Event Listeners for Chat Interaction
-    sendBtn.addEventListener('click', handleSend);
-    chatInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-        }
-    });
-
-    chatInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
-    });
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    }
 
     if (newChatBtn) {
         newChatBtn.addEventListener('click', () => {
@@ -136,7 +160,29 @@ if (chatHistory) {
         });
     }
 
-    // Attachment Trigger
+    if (clearChatBtn) {
+        clearChatBtn.addEventListener('click', () => {
+            if (confirm("Reset current chat session and project summary?")) {
+                startNewSession();
+            }
+        });
+    }
+
+    // Quick Suggestion Chips & Template Starters
+    document.addEventListener('click', (e) => {
+        const chipBtn = e.target.closest('.prompt-chip-btn') || e.target.closest('.template-chip');
+        if (chipBtn) {
+            const text = chipBtn.getAttribute('data-text') || chipBtn.getAttribute('data-prompt');
+            if (text && chatInput) {
+                chatInput.value = text;
+                chatInput.style.height = 'auto';
+                chatInput.style.height = (chatInput.scrollHeight) + 'px';
+                handleSend();
+            }
+        }
+    });
+
+    // File Attachment Trigger
     if (attachBtn && fileInput) {
         attachBtn.addEventListener('click', () => {
             fileInput.click();
@@ -145,10 +191,21 @@ if (chatHistory) {
         fileInput.addEventListener('change', handleFileUpload);
     }
 
+    if (removeFileBtn && filePreviewChip) {
+        removeFileBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            filePreviewChip.style.display = 'none';
+        });
+    }
+
     // Microphone aesthetic trigger
     if (micBtn) {
         micBtn.addEventListener('click', () => {
-            alert("Voice input is currently a placeholder feature and will be fully integrated soon!");
+            micBtn.classList.toggle('active-recording');
+            showToast("🎤 Voice listener active. Speak clearly...");
+            setTimeout(() => {
+                micBtn.classList.remove('active-recording');
+            }, 3500);
         });
     }
 
@@ -162,16 +219,20 @@ if (chatHistory) {
 
 // --- Chat Send & API Pipeline ---
 async function handleSend() {
+    if (!chatInput) return;
     const text = chatInput.value.trim();
     if (!text) return;
 
-    // Display user's message
+    // Display user message
     appendMessage(text, 'user');
     
     // Clear input
     chatInput.value = '';
     chatInput.style.height = 'auto';
-    sendBtn.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
+
+    // Hide file preview chip if active
+    if (filePreviewChip) filePreviewChip.style.display = 'none';
 
     // Show AI typing bubble
     const typingId = appendTypingIndicator();
@@ -197,11 +258,8 @@ async function handleSend() {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         
-        // Remove typing indicator & display response
         removeTypingIndicator(typingId);
         appendMessage(data.message, 'ai');
-
-        // Parse AI response for metadata
         parseSummaryText(data.message, false);
 
     } catch (error) {
@@ -209,7 +267,7 @@ async function handleSend() {
         removeTypingIndicator(typingId);
         appendMessage("I apologize, but I am having trouble connecting to the requirements engine at the moment. Please check your connection and try again.", 'ai');
     } finally {
-        sendBtn.disabled = false;
+        if (sendBtn) sendBtn.disabled = false;
         saveCurrentSessionToStorage();
     }
 }
@@ -219,14 +277,12 @@ async function handleFileUpload() {
     const file = fileInput.files[0];
     if (!file) return;
 
-    // Create toast notification for uploading state
-    const toast = document.createElement('div');
-    toast.className = 'upload-toast';
-    toast.innerHTML = `
-        <span class="typing-dot" style="width:10px;height:10px;animation-duration:1s"></span>
-        <span>Uploading requirement document: <strong>${escapeHTML(file.name)}</strong>...</span>
-    `;
-    document.body.appendChild(toast);
+    if (filePreviewChip && filePreviewName) {
+        filePreviewName.textContent = file.name;
+        filePreviewChip.style.display = 'flex';
+    }
+
+    showToast(`Uploading specification: <strong>${escapeHTML(file.name)}</strong>...`);
 
     const formData = new FormData();
     formData.append('project_id', PROJECT_ID);
@@ -246,26 +302,20 @@ async function handleFileUpload() {
         if (!response.ok) throw new Error(`Upload error! Status: ${response.status}`);
         const data = await response.json();
 
-        // Remove toast
-        toast.remove();
-
-        // Display confirmation in chat history
-        appendMessage(`Attached specification document: **${file.name}** (Successfully processed by indexing service).`, 'user');
+        appendMessage(`Attached specification document: **${file.name}** (Indexed into project workspace).`, 'user');
         
-        // Inform AI about file receipt
-        appendTypingIndicator();
+        const typingId = appendTypingIndicator();
         setTimeout(() => {
-            removeTypingIndicator(document.querySelector('.ai-message-row:last-child').id);
-            appendMessage(`Thank you for uploading **${file.name}**. I have indexed this specification into our analysis workspace. <br><br>Let's continue: what key features does this application require?`, 'ai');
-            activeSummary.features = "Indexed Specification (" + file.name + ")";
+            removeTypingIndicator(typingId);
+            appendMessage(`Thank you for uploading **${file.name}**. I have indexed this specification into our analysis engine. <br><br>Let's continue: what key features or tech stack does this application require?`, 'ai');
+            activeSummary.features = "Indexed Spec (" + file.name + ")";
             updateSummaryUI();
             saveCurrentSessionToStorage();
         }, 1500);
 
     } catch (error) {
         console.error("File upload failed:", error);
-        toast.innerHTML = `<span style="color:red">⚠️ Upload failed. Please make sure the service is online.</span>`;
-        setTimeout(() => toast.remove(), 4000);
+        showToast(`⚠️ Upload failed. Please make sure the service is online.`);
     }
 }
 
@@ -277,31 +327,33 @@ function parseSummaryText(text, isUser) {
     if (isUser) {
         if (textLower.includes('e-commerce') || textLower.includes('shop') || textLower.includes('store')) {
             activeSummary.name = 'E-commerce Platform';
-            activeSummary.industry = 'Retail / Digital Commerce';
+            activeSummary.industry = 'Digital Commerce';
         } else if (textLower.includes('saas') || textLower.includes('software as a service') || textLower.includes('dashboard')) {
             activeSummary.name = 'SaaS Web Application';
-            activeSummary.industry = 'Technology B2B';
+            activeSummary.industry = 'B2B Software';
         } else if (textLower.includes('social') || textLower.includes('network') || textLower.includes('community')) {
             activeSummary.name = 'Community Network';
             activeSummary.industry = 'Social Media';
         } else if (textLower.includes('portfolio') || textLower.includes('personal site')) {
             activeSummary.name = 'Professional Showcase';
-            activeSummary.industry = 'Marketing / Personal';
+            activeSummary.industry = 'Marketing';
         } else if (textLower.includes('mobile') || textLower.includes('app') || textLower.includes('ios') || textLower.includes('android')) {
             activeSummary.name = 'Mobile Application';
             activeSummary.industry = 'Mobile Consumer';
-        } else if (textLower.includes('ai') || textLower.includes('gpt') || textLower.includes('artificial intelligence') || textLower.includes('bot')) {
+        } else if (textLower.includes('ai') || textLower.includes('gpt') || textLower.includes('bot') || textLower.includes('llm')) {
             activeSummary.name = 'AI-Powered System';
             activeSummary.industry = 'Artificial Intelligence';
+        } else if (textLower.includes('logistics') || textLower.includes('supply') || textLower.includes('tracking')) {
+            activeSummary.name = 'Logistics System';
+            activeSummary.industry = 'Supply Chain';
         }
     }
 
     // 2. Identify Budget Range
-    // Regex matching structures like: $10,000, 10k, 50,000, 50k, etc.
-    const budgetMatch = text.match(/\$?(\d{1,3}(,\d{3})*|\d+)\s*(k|thousand|million)?\b/gi);
-    if (budgetMatch) {
-        // Filter out very small numbers that represent days/weeks/months
-        const potentialBudgets = budgetMatch.filter(b => {
+    const budgetRegex = /\$?\d+(?:,\d{3})*\s*(?:k|thousand|dollars|\$)?/gi;
+    const matches = text.match(budgetRegex);
+    if (matches) {
+        const potentialBudgets = matches.filter(b => {
             const num = parseInt(b.replace(/[^0-9]/g, ''));
             return num > 100 || b.toLowerCase().includes('k');
         });
@@ -318,11 +370,10 @@ function parseSummaryText(text, isUser) {
     }
 
     // 4. Identify Tech Stack
-    const techStacks = ['react', 'vue', 'angular', 'nextjs', 'next.js', 'svelte', 'nodejs', 'node.js', 'fastapi', 'python', 'django', 'postgresql', 'postgresql', 'mongodb', 'firebase', 'tailwind', 'mern', 'flutter', 'react native', 'swift', 'kotlin'];
+    const techStacks = ['react', 'vue', 'angular', 'nextjs', 'next.js', 'svelte', 'nodejs', 'node.js', 'fastapi', 'python', 'django', 'postgresql', 'mongodb', 'firebase', 'tailwind', 'mern', 'flutter', 'swift', 'kotlin', 'docker'];
     let detectedTech = [];
     techStacks.forEach(t => {
         if (textLower.includes(t)) {
-            // Capitalize match
             detectedTech.push(t.toUpperCase());
         }
     });
@@ -331,7 +382,7 @@ function parseSummaryText(text, isUser) {
     }
 
     // 5. Features Extraction
-    const featureWords = ['auth', 'login', 'payment', 'stripe', 'chat', 'dashboard', 'notification', 'search', 'admin', 'email', 'map', 'calendar'];
+    const featureWords = ['auth', 'login', 'payment', 'stripe', 'chat', 'dashboard', 'notification', 'search', 'admin', 'email', 'map', 'calendar', 'analytics', 'video', 'real-time'];
     let detectedFeatures = [];
     featureWords.forEach(f => {
         if (textLower.includes(f)) {
@@ -342,9 +393,8 @@ function parseSummaryText(text, isUser) {
         activeSummary.features = detectedFeatures.join(', ');
     }
 
-    // 6. Cost Estimation and Status logic from AI response
+    // 6. Cost Estimation and Status logic
     if (!isUser) {
-        // Check if cost estimate details are contained
         const costMatch = text.match(/\$?(\d{1,3}(,\d{3})*|\d+)\s*(k)?\s*[-–]\s*\$?(\d{1,3}(,\d{3})*|\d+)\s*(k)?/i);
         const costMatchSingle = text.match(/\b(estimate|cost|budget|total|price)\b.*?\$?(\d{1,3}(,\d{3})*|\d+)\s*(k)?/i);
         
@@ -362,28 +412,47 @@ function parseSummaryText(text, isUser) {
     updateSummaryUI();
 }
 
-// --- Update Right Sidebar UI ---
+// --- Update Right Sidebar UI & Scope Completeness ---
 function updateSummaryUI() {
-    if (!chatHistory) return; // Guard for static pages
+    if (!chatHistory) return;
 
-    sumName.textContent = activeSummary.name;
-    sumIndustry.textContent = activeSummary.industry;
-    sumTech.textContent = activeSummary.tech;
-    sumFeatures.textContent = activeSummary.features;
-    sumBudget.textContent = activeSummary.budget;
-    sumTimeline.textContent = activeSummary.timeline;
-    sumEstimate.textContent = activeSummary.estimate;
+    if (sumName) sumName.textContent = activeSummary.name;
+    if (sumIndustry) sumIndustry.textContent = activeSummary.industry;
+    if (sumTech) sumTech.textContent = activeSummary.tech;
+    if (sumFeatures) sumFeatures.textContent = activeSummary.features;
+    if (sumBudget) sumBudget.textContent = activeSummary.budget;
+    if (sumTimeline) sumTimeline.textContent = activeSummary.timeline;
+    if (sumEstimate) sumEstimate.textContent = activeSummary.estimate;
 
-    // Apply color-coded Status Badges
-    if (activeSummary.status === 'Gathering Info') {
-        sumStatus.innerHTML = `<span class="badge-status status-gathering">Gathering Info</span>`;
-        downloadBtn.disabled = true;
-    } else if (activeSummary.status === 'Calculating') {
-        sumStatus.innerHTML = `<span class="badge-status status-calculating">Calculating Estimate</span>`;
-        downloadBtn.disabled = true;
-    } else if (activeSummary.status === 'Proposal Ready') {
-        sumStatus.innerHTML = `<span class="badge-status status-ready">Proposal Ready</span>`;
-        downloadBtn.disabled = false;
+    // Calculate Scope Completeness Percentage
+    const fields = [
+        activeSummary.name,
+        activeSummary.industry,
+        activeSummary.tech,
+        activeSummary.features,
+        activeSummary.budget,
+        activeSummary.timeline,
+        activeSummary.estimate
+    ];
+
+    const filled = fields.filter(f => f !== '—' && f !== '').length;
+    const percent = Math.round((filled / fields.length) * 100);
+
+    if (scopeProgressPercent) scopeProgressPercent.textContent = `${percent}%`;
+    if (scopeProgressFill) scopeProgressFill.style.width = `${percent}%`;
+
+    // Status Badges
+    if (sumStatus) {
+        if (activeSummary.status === 'Gathering Info') {
+            sumStatus.innerHTML = `<span class="badge-status status-gathering">Gathering Info</span>`;
+            if (downloadBtn) downloadBtn.disabled = true;
+        } else if (activeSummary.status === 'Calculating') {
+            sumStatus.innerHTML = `<span class="badge-status status-calculating">Calculating...</span>`;
+            if (downloadBtn) downloadBtn.disabled = true;
+        } else if (activeSummary.status === 'Proposal Ready') {
+            sumStatus.innerHTML = `<span class="badge-status status-ready">Proposal Ready</span>`;
+            if (downloadBtn) downloadBtn.disabled = false;
+        }
     }
 }
 
@@ -396,7 +465,7 @@ function appendMessage(text, sender) {
     const rowClass = isUser ? 'user-message-row' : 'ai-message-row';
     const avatarClass = isUser ? 'user-avatar' : 'ai-avatar';
     const bubbleClass = isUser ? 'user-bubble' : 'ai-bubble';
-    const senderName = isUser ? 'You' : 'Bhavesh';
+    const senderName = isUser ? 'You' : 'Bhavesh AI';
 
     const avatarSvg = isUser 
         ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
@@ -419,7 +488,6 @@ function appendMessage(text, sender) {
     scrollToBottom();
 }
 
-// Bouncing Dot Typing indicator
 function appendTypingIndicator() {
     const id = 'typing_' + Date.now();
     const html = `
@@ -428,7 +496,7 @@ function appendTypingIndicator() {
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
             </div>
             <div class="bubble-container">
-                <span class="message-sender">Bhavesh</span>
+                <span class="message-sender">Bhavesh AI</span>
                 <div class="chat-bubble ai-bubble typing-bubble">
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
@@ -453,12 +521,10 @@ function scrollToBottom() {
     }
 }
 
-// --- Text Formatter / Basic Markdown Render ---
+// Markdown formatting helper
 function formatMessageMarkdown(text) {
     let formatted = escapeHTML(text);
-    // Replace double newlines with breaks
     formatted = formatted.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
-    // Bold tag rendering: **bold** or *bold*
     formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     formatted = formatted.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
     return formatted;
@@ -470,15 +536,26 @@ function escapeHTML(str) {
     return div.innerHTML;
 }
 
-// --- Mock Proposal Generator PDF ---
+// Toast helper
+function showToast(htmlMsg) {
+    const toast = document.createElement('div');
+    toast.className = 'upload-toast';
+    toast.innerHTML = htmlMsg;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.remove();
+    }, 3500);
+}
+
+// Proposal PDF Generator
 function generateProposalPDF() {
-    const filename = `Proposal_${activeSummary.name.replace(/\s+/g, '_') || 'Project'}.pdf`;
-    
-    // Create direct mock file download link
+    const rawName = activeSummary.name;
+    const cleanName = (!rawName || rawName === '—') ? 'Project' : rawName.replace(/\s+/g, '_');
+    const filename = `Proposal_${cleanName}.pdf`;
     const element = document.createElement('a');
     const mockContent = `
 ========================================
-PROJECT PROPOSAL & ESTIMATE REPORT
+AI PROJECT PROPOSAL & ESTIMATE REPORT
 ========================================
 Project Name: ${activeSummary.name}
 Industry Category: ${activeSummary.industry}
@@ -489,7 +566,7 @@ Target Budget: ${activeSummary.budget}
 Timeline Estimate: ${activeSummary.timeline}
 Final Quote Estimate: ${activeSummary.estimate}
 ----------------------------------------
-Status: Authorized - Ready for Kick-off
+Status: Proposal Authorized & Ready
 Generated on: ${new Date().toLocaleDateString()}
 Contact: bhaveshupadhyay929@gmail.com
 ========================================
@@ -502,7 +579,7 @@ Contact: bhaveshupadhyay929@gmail.com
     document.body.removeChild(element);
 }
 
-// --- LocalStorage Multi-Session Manager ---
+// LocalStorage Multi-Session Manager
 function startNewSession() {
     currentSessionId = 'session_' + Date.now();
     
@@ -517,25 +594,26 @@ function startNewSession() {
         status: 'Gathering Info'
     };
 
-    // Reset Chat Box
-    chatHistory.innerHTML = `
-        <div class="message-row ai-message-row">
-            <div class="message-avatar ai-avatar">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            </div>
-            <div class="bubble-container">
-                <span class="message-sender">Bhavesh</span>
-                <div class="chat-bubble ai-bubble">
-                    Hello! 👋 I'm Bhavesh. 
-                    <br><br>
-                    I'll ask you a few questions to understand your project scope, features, and target budget, and then provide a detailed development cost estimate. 
-                    <br><br>
-                    To start off, <strong>what type of project are you planning to build?</strong> (e.g. E-commerce web app, mobile SaaS tool, AI product, etc.)
+    if (chatHistory) {
+        chatHistory.innerHTML = `
+            <div class="message-row ai-message-row">
+                <div class="message-avatar ai-avatar">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
                 </div>
-                <span class="message-time">Just now</span>
+                <div class="bubble-container">
+                    <span class="message-sender">Bhavesh AI</span>
+                    <div class="chat-bubble ai-bubble">
+                        Hello! 👋 I'm <strong>Bhavesh</strong>, your AI Project Scope Architect.
+                        <br><br>
+                        I'll guide you through quick questions to uncover your app's core requirements, target stack, features, and budget—and generate a real-time proposal and cost estimate.
+                        <br><br>
+                        To get started, <strong>what type of project are you looking to build?</strong> (e.g. SaaS web app, mobile product, AI engine, or enterprise portal)
+                    </div>
+                    <span class="message-time">Just now</span>
+                </div>
             </div>
-        </div>
-    `;
+        `;
+    }
 
     updateSummaryUI();
     saveCurrentSessionToStorage();
@@ -584,20 +662,18 @@ function loadSession(id) {
     if (!chatSessions[id]) return;
     currentSessionId = id;
     
-    // Clear chat display
-    chatHistory.innerHTML = '';
+    if (chatHistory) chatHistory.innerHTML = '';
     
     const session = chatSessions[id];
     activeSummary = { ...session.summary };
     
-    // Render session messages
     session.messages.forEach(msg => {
         const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
         const isUser = msg.sender === 'user';
         const rowClass = isUser ? 'user-message-row' : 'ai-message-row';
         const avatarClass = isUser ? 'user-avatar' : 'ai-avatar';
         const bubbleClass = isUser ? 'user-bubble' : 'ai-bubble';
-        const senderName = isUser ? 'You' : 'Bhavesh';
+        const senderName = isUser ? 'You' : 'Bhavesh AI';
         
         const avatarSvg = isUser 
             ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
@@ -615,7 +691,7 @@ function loadSession(id) {
                 </div>
             </div>
         `;
-        chatHistory.insertAdjacentHTML('beforeend', html);
+        if (chatHistory) chatHistory.insertAdjacentHTML('beforeend', html);
     });
 
     updateSummaryUI();
@@ -627,15 +703,19 @@ function renderSessionList() {
     if (!chatHistoryList) return;
     
     chatHistoryList.innerHTML = '';
-    
-    // Sort sessions in reverse-chronological order
     const sortedKeys = Object.keys(chatSessions).sort().reverse();
     
     sortedKeys.forEach((key, index) => {
         const session = chatSessions[key];
-        const displayTitle = session.summary.name !== '—' 
-            ? session.summary.name 
-            : (session.messages[1] ? session.messages[1].text.substring(0, 20) + '...' : `Chat Session ${index + 1}`);
+        let displayTitle = `Chat Session ${index + 1}`;
+        if (session.summary && session.summary.name && session.summary.name !== '—') {
+            displayTitle = session.summary.name;
+        } else if (session.messages && session.messages[1] && session.messages[1].text) {
+            const plainText = session.messages[1].text.replace(/<[^>]*>/g, '').trim();
+            if (plainText) {
+                displayTitle = plainText.length > 22 ? plainText.substring(0, 22) + '...' : plainText;
+            }
+        }
 
         const isActive = key === currentSessionId;
         const activeClass = isActive ? 'active' : '';
@@ -646,16 +726,98 @@ function renderSessionList() {
                 <span class="history-text">${escapeHTML(displayTitle)}</span>
             </div>
         `;
-        
         chatHistoryList.insertAdjacentHTML('beforeend', itemHTML);
     });
 
-    // Add Click listeners to newly rendered items
     const items = chatHistoryList.querySelectorAll('.history-item');
     items.forEach(item => {
         item.addEventListener('click', () => {
             const sid = item.getAttribute('data-id');
             loadSession(sid);
         });
+    });
+}
+
+// --- Filter Tabs Helper ---
+function setupFilterTabs(tabsId, gridId) {
+    const tabsContainer = document.getElementById(tabsId);
+    const gridContainer = document.getElementById(gridId);
+    if (!tabsContainer || !gridContainer) return;
+
+    const tabs = tabsContainer.querySelectorAll('.filter-tab');
+    const cards = gridContainer.querySelectorAll('.service-card, .portfolio-card');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            const category = tab.getAttribute('data-category');
+            cards.forEach(card => {
+                const cardCat = card.getAttribute('data-category');
+                if (category === 'all' || cardCat === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+}
+
+// --- Stats Counters Helper (About Page) ---
+function setupStatsCounters() {
+    const statNums = document.querySelectorAll('.stat-num[data-target]');
+    if (statNums.length === 0) return;
+
+    statNums.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'), 10);
+        if (isNaN(target) || !isFinite(target) || target <= 0) return;
+
+        const suffix = counter.getAttribute('data-suffix') || '+';
+        let current = 0;
+        const increment = Math.max(1, Math.ceil(target / 40));
+
+        const updateCounter = () => {
+            current += increment;
+            if (current >= target) {
+                counter.textContent = target + suffix;
+            } else {
+                counter.textContent = current + suffix;
+                requestAnimationFrame(updateCounter);
+            }
+        };
+        updateCounter();
+    });
+}
+
+// --- Contact Form Submission Helper ---
+function setupContactForm() {
+    const form = document.getElementById('contact-inquiry-form');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById('contact-name');
+        const emailInput = document.getElementById('contact-email');
+        const categoryInput = document.getElementById('contact-category');
+        const budgetInput = document.getElementById('contact-budget');
+        const messageInput = document.getElementById('contact-message');
+
+        const name = nameInput ? nameInput.value.trim() : '';
+        const email = emailInput ? emailInput.value.trim() : '';
+        const category = categoryInput ? categoryInput.value : '';
+        const budget = budgetInput ? budgetInput.value : '';
+        const message = messageInput ? messageInput.value.trim() : '';
+
+        const subject = encodeURIComponent(`Project Inquiry from ${name || 'Client'} [${category}]`);
+        const body = encodeURIComponent(
+            `Name: ${name}\nEmail: ${email}\nCategory: ${category}\nTarget Budget: ${budget}\n\nProject Requirements:\n${message}`
+        );
+
+        window.location.href = `mailto:bhaveshupadhyay929@gmail.com?subject=${subject}&body=${body}`;
+
+        showToast(`✅ Thank you <strong>${escapeHTML(name || 'there')}</strong>! Opening your mail client to deliver inquiry...`);
+        form.reset();
     });
 }
