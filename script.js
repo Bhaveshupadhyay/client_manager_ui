@@ -37,9 +37,8 @@ const API_KEY = '1234';
 const CLIENT_NAME = 'WebClient';
 const PROJECT_ID = 'fi_us_2026_4528';
 
-// State Management
-let currentSessionId = 'session_' + Date.now();
-let chatSessions = {};
+// Single Conversation State Management
+let currentSessionId = 'single_workspace_session';
 let activeSummary = {
     name: '—',
     industry: '—',
@@ -110,15 +109,9 @@ window.addEventListener('DOMContentLoaded', () => {
         if (moonIcon) moonIcon.style.display = 'block';
     }
 
-    // 3. Load Chat History from Local Storage (Home Workspace)
+    // 3. Load Single Conversation Session from Local Storage (Home Workspace)
     if (chatHistory) {
-        loadSessionsFromStorage();
-        if (Object.keys(chatSessions).length === 0) {
-            startNewSession();
-        } else {
-            const sortedSessions = Object.keys(chatSessions).sort().reverse();
-            loadSession(sortedSessions[0]);
-        }
+        loadSessionFromStorage();
 
         // Check for URL parameter ?prompt=...
         const urlParams = new URLSearchParams(window.location.search);
@@ -201,18 +194,11 @@ if (chatHistory) {
         });
     }
 
-    if (newChatBtn) {
-        newChatBtn.addEventListener('click', () => {
-            trackGAEvent('start_new_chat', { previous_session_id: currentSessionId });
-            startNewSession();
-        });
-    }
-
     if (clearChatBtn) {
         clearChatBtn.addEventListener('click', () => {
-            if (confirm("Reset current chat session and project summary?")) {
+            if (confirm("Reset current conversation and project summary?")) {
                 trackGAEvent('reset_chat_session', { session_id: currentSessionId });
-                startNewSession();
+                resetConversation();
             }
         });
     }
@@ -337,7 +323,7 @@ async function handleSend(triggerSource = 'send_button') {
         appendMessage("I apologize, but I am having trouble connecting to the requirements engine at the moment. Please check your connection and try again.", 'ai');
     } finally {
         if (sendBtn) sendBtn.disabled = false;
-        saveCurrentSessionToStorage();
+        saveSessionToStorage();
     }
 }
 
@@ -390,7 +376,7 @@ async function handleFileUpload() {
             appendMessage(`Thank you for uploading **${file.name}**. I have indexed this specification into our analysis engine. <br><br>Let's continue: what key features or tech stack does this application require?`, 'ai');
             activeSummary.features = "Indexed Spec (" + file.name + ")";
             updateSummaryUI();
-            saveCurrentSessionToStorage();
+            saveSessionToStorage();
         }, 1500);
 
     } catch (error) {
@@ -672,10 +658,8 @@ Contact: bhaveshupadhyay929@gmail.com
     document.body.removeChild(element);
 }
 
-// LocalStorage Multi-Session Manager
-function startNewSession() {
-    currentSessionId = 'session_' + Date.now();
-    
+// Single Conversation Storage Manager
+function resetConversation() {
     activeSummary = {
         name: '—',
         industry: '—',
@@ -709,11 +693,10 @@ function startNewSession() {
     }
 
     updateSummaryUI();
-    saveCurrentSessionToStorage();
-    renderSessionList();
+    saveSessionToStorage();
 }
 
-function saveCurrentSessionToStorage() {
+function saveSessionToStorage() {
     if (!chatHistory) return;
     
     const messages = [];
@@ -730,106 +713,65 @@ function saveCurrentSessionToStorage() {
         }
     });
 
-    chatSessions[currentSessionId] = {
+    const sessionData = {
         messages: messages,
         summary: { ...activeSummary }
     };
 
-    localStorage.setItem('ai_chat_sessions', JSON.stringify(chatSessions));
-    renderSessionList();
+    localStorage.setItem('ai_single_chat_session', JSON.stringify(sessionData));
 }
 
-function loadSessionsFromStorage() {
+function loadSessionFromStorage() {
     try {
-        const stored = localStorage.getItem('ai_chat_sessions');
-        if (stored) {
-            chatSessions = JSON.parse(stored);
-        }
-    } catch (e) {
-        console.error("Error reading chat history sessions:", e);
-        chatSessions = {};
-    }
-}
-
-function loadSession(id) {
-    if (!chatSessions[id]) return;
-    currentSessionId = id;
-    
-    if (chatHistory) chatHistory.innerHTML = '';
-    
-    const session = chatSessions[id];
-    activeSummary = { ...session.summary };
-    
-    session.messages.forEach(msg => {
-        const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-        const isUser = msg.sender === 'user';
-        const rowClass = isUser ? 'user-message-row' : 'ai-message-row';
-        const avatarClass = isUser ? 'user-avatar' : 'ai-avatar';
-        const bubbleClass = isUser ? 'user-bubble' : 'ai-bubble';
-        const senderName = isUser ? 'You' : 'Bhavesh AI';
-        
-        const avatarSvg = isUser 
-            ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
-            : `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
-
-        const html = `
-            <div class="message-row ${rowClass}">
-                <div class="message-avatar ${avatarClass}">
-                    ${avatarSvg}
-                </div>
-                <div class="bubble-container">
-                    <span class="message-sender">${senderName}</span>
-                    <div class="chat-bubble ${bubbleClass}">${msg.text}</div>
-                    <span class="message-time">${time}</span>
-                </div>
-            </div>
-        `;
-        if (chatHistory) chatHistory.insertAdjacentHTML('beforeend', html);
-    });
-
-    updateSummaryUI();
-    scrollToBottom();
-    renderSessionList();
-}
-
-function renderSessionList() {
-    if (!chatHistoryList) return;
-    
-    chatHistoryList.innerHTML = '';
-    const sortedKeys = Object.keys(chatSessions).sort().reverse();
-    
-    sortedKeys.forEach((key, index) => {
-        const session = chatSessions[key];
-        let displayTitle = `Chat Session ${index + 1}`;
-        if (session.summary && session.summary.name && session.summary.name !== '—') {
-            displayTitle = session.summary.name;
-        } else if (session.messages && session.messages[1] && session.messages[1].text) {
-            const plainText = session.messages[1].text.replace(/<[^>]*>/g, '').trim();
-            if (plainText) {
-                displayTitle = plainText.length > 22 ? plainText.substring(0, 22) + '...' : plainText;
-            }
+        const stored = localStorage.getItem('ai_single_chat_session');
+        if (!stored) {
+            resetConversation();
+            return;
         }
 
-        const isActive = key === currentSessionId;
-        const activeClass = isActive ? 'active' : '';
+        const session = JSON.parse(stored);
+        if (!session || !session.messages || session.messages.length === 0) {
+            resetConversation();
+            return;
+        }
 
-        const itemHTML = `
-            <div class="history-item ${activeClass}" data-id="${key}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                <span class="history-text">${escapeHTML(displayTitle)}</span>
-            </div>
-        `;
-        chatHistoryList.insertAdjacentHTML('beforeend', itemHTML);
-    });
+        if (chatHistory) chatHistory.innerHTML = '';
+        activeSummary = session.summary ? { ...session.summary } : { ...activeSummary };
 
-    const items = chatHistoryList.querySelectorAll('.history-item');
-    items.forEach(item => {
-        item.addEventListener('click', () => {
-            const sid = item.getAttribute('data-id');
-            trackGAEvent('switch_chat_session', { selected_session_id: sid });
-            loadSession(sid);
+        session.messages.forEach(msg => {
+            const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            const isUser = msg.sender === 'user';
+            const rowClass = isUser ? 'user-message-row' : 'ai-message-row';
+            const avatarClass = isUser ? 'user-avatar' : 'ai-avatar';
+            const bubbleClass = isUser ? 'user-bubble' : 'ai-bubble';
+            const senderName = isUser ? 'You' : 'Bhavesh AI';
+            
+            const avatarSvg = isUser 
+                ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
+                : `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
+
+            const html = `
+                <div class="message-row ${rowClass}">
+                    <div class="message-avatar ${avatarClass}">
+                        ${avatarSvg}
+                    </div>
+                    <div class="bubble-container">
+                        <span class="message-sender">${senderName}</span>
+                        <div class="chat-bubble ${bubbleClass}">${msg.text}</div>
+                        <span class="message-time">${time}</span>
+                    </div>
+                </div>
+            `;
+            if (chatHistory) chatHistory.insertAdjacentHTML('beforeend', html);
         });
-    });
+
+        updateSummaryUI();
+        scrollToBottom();
+
+    } catch (e) {
+        console.error("Error reading chat session:", e);
+        resetConversation();
+    }
 }
 
 // --- Filter Tabs Helper ---
