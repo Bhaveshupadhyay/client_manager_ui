@@ -51,6 +51,26 @@ let activeSummary = {
     status: 'Gathering Info'
 };
 
+// --- Google Analytics 4 (GA4) Custom Event Dispatcher ---
+function trackGAEvent(eventName, eventParams = {}) {
+    try {
+        const enrichedParams = {
+            page_path: window.location.pathname,
+            page_title: document.title,
+            timestamp: new Date().toISOString(),
+            ...eventParams
+        };
+        
+        console.log(`[GA4 Event] ${eventName}:`, enrichedParams);
+        
+        if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, enrichedParams);
+        }
+    } catch (e) {
+        console.warn('GA4 event dispatch failed:', e);
+    }
+}
+
 // --- Initial Setup on DOM Load ---
 window.addEventListener('DOMContentLoaded', () => {
     // 1. Ping Server
@@ -86,7 +106,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (prefilledPrompt && chatInput) {
             chatInput.value = decodeURIComponent(prefilledPrompt);
             setTimeout(() => {
-                handleSend();
+                handleSend('url_parameter');
             }, 600);
         }
     }
@@ -100,12 +120,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // 6. Setup Contact Form Handler
     setupContactForm();
+
+    // 7. Setup Global Link & Action Trackers
+    setupGlobalGATracking();
 });
 
 // --- Theme Toggle Logic ---
 if (themeToggle) {
     themeToggle.addEventListener('click', () => {
         const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
         if (isDark) {
             document.body.removeAttribute('data-theme');
             localStorage.setItem('theme', 'light');
@@ -117,14 +141,17 @@ if (themeToggle) {
             if (sunIcon) sunIcon.style.display = 'block';
             if (moonIcon) moonIcon.style.display = 'none';
         }
+        trackGAEvent('toggle_theme', { theme: newTheme });
     });
 }
 
 // --- Responsive Nav & Sidebar Menu Toggles ---
 if (mobileMenuToggle) {
     mobileMenuToggle.addEventListener('click', () => {
+        const isOpen = mainNav && mainNav.classList.contains('open');
         if (mainNav) mainNav.classList.toggle('open');
         if (leftSidebar) leftSidebar.classList.toggle('open');
+        trackGAEvent('toggle_mobile_menu', { state: !isOpen ? 'open' : 'closed' });
     });
 }
 
@@ -138,13 +165,13 @@ if (chatHistory) {
 
 // --- Chat Window Logic (Executes on index.html) ---
 if (chatHistory) {
-    if (sendBtn) sendBtn.addEventListener('click', handleSend);
+    if (sendBtn) sendBtn.addEventListener('click', () => handleSend('send_button'));
     
     if (chatInput) {
         chatInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleSend();
+                handleSend('enter_key');
             }
         });
 
@@ -156,6 +183,7 @@ if (chatHistory) {
 
     if (newChatBtn) {
         newChatBtn.addEventListener('click', () => {
+            trackGAEvent('start_new_chat', { previous_session_id: currentSessionId });
             startNewSession();
         });
     }
@@ -163,6 +191,7 @@ if (chatHistory) {
     if (clearChatBtn) {
         clearChatBtn.addEventListener('click', () => {
             if (confirm("Reset current chat session and project summary?")) {
+                trackGAEvent('reset_chat_session', { session_id: currentSessionId });
                 startNewSession();
             }
         });
@@ -173,11 +202,18 @@ if (chatHistory) {
         const chipBtn = e.target.closest('.prompt-chip-btn') || e.target.closest('.template-chip');
         if (chipBtn) {
             const text = chipBtn.getAttribute('data-text') || chipBtn.getAttribute('data-prompt');
+            const chipType = chipBtn.classList.contains('prompt-chip-btn') ? 'prompt_chip' : 'template_chip';
+            
+            trackGAEvent('click_suggestion_chip', {
+                chip_text: text,
+                chip_type: chipType
+            });
+
             if (text && chatInput) {
                 chatInput.value = text;
                 chatInput.style.height = 'auto';
                 chatInput.style.height = (chatInput.scrollHeight) + 'px';
-                handleSend();
+                handleSend('suggestion_chip');
             }
         }
     });
@@ -185,6 +221,7 @@ if (chatHistory) {
     // File Attachment Trigger
     if (attachBtn && fileInput) {
         attachBtn.addEventListener('click', () => {
+            trackGAEvent('click_attach_file', { session_id: currentSessionId });
             fileInput.click();
         });
 
@@ -193,6 +230,8 @@ if (chatHistory) {
 
     if (removeFileBtn && filePreviewChip) {
         removeFileBtn.addEventListener('click', () => {
+            const filename = filePreviewName ? filePreviewName.textContent : '';
+            trackGAEvent('remove_attached_file', { file_name: filename });
             fileInput.value = '';
             filePreviewChip.style.display = 'none';
         });
@@ -201,6 +240,7 @@ if (chatHistory) {
     // Microphone aesthetic trigger
     if (micBtn) {
         micBtn.addEventListener('click', () => {
+            trackGAEvent('activate_voice_listener', { session_id: currentSessionId });
             micBtn.classList.toggle('active-recording');
             showToast("🎤 Voice listener active. Speak clearly...");
             setTimeout(() => {
@@ -218,10 +258,19 @@ if (chatHistory) {
 }
 
 // --- Chat Send & API Pipeline ---
-async function handleSend() {
+async function handleSend(triggerSource = 'send_button') {
     if (!chatInput) return;
     const text = chatInput.value.trim();
     if (!text) return;
+
+    // Track GA4 Event for user sending message (includes exact message text)
+    trackGAEvent('send_chat_message', {
+        message_text: text,
+        message_length: text.length,
+        session_id: currentSessionId,
+        trigger_source: triggerSource,
+        has_file_attached: !!(fileInput && fileInput.files && fileInput.files.length > 0)
+    });
 
     // Display user message
     appendMessage(text, 'user');
@@ -277,6 +326,12 @@ async function handleFileUpload() {
     const file = fileInput.files[0];
     if (!file) return;
 
+    trackGAEvent('upload_file_start', {
+        file_name: file.name,
+        file_size: file.size,
+        file_type: file.type
+    });
+
     if (filePreviewChip && filePreviewName) {
         filePreviewName.textContent = file.name;
         filePreviewChip.style.display = 'flex';
@@ -302,6 +357,11 @@ async function handleFileUpload() {
         if (!response.ok) throw new Error(`Upload error! Status: ${response.status}`);
         const data = await response.json();
 
+        trackGAEvent('upload_file_success', {
+            file_name: file.name,
+            project_id: PROJECT_ID
+        });
+
         appendMessage(`Attached specification document: **${file.name}** (Indexed into project workspace).`, 'user');
         
         const typingId = appendTypingIndicator();
@@ -315,6 +375,10 @@ async function handleFileUpload() {
 
     } catch (error) {
         console.error("File upload failed:", error);
+        trackGAEvent('upload_file_failure', {
+            file_name: file.name,
+            error_message: error.message
+        });
         showToast(`⚠️ Upload failed. Please make sure the service is online.`);
     }
 }
@@ -549,6 +613,15 @@ function showToast(htmlMsg) {
 
 // Proposal PDF Generator
 function generateProposalPDF() {
+    trackGAEvent('download_proposal_pdf', {
+        project_name: activeSummary.name,
+        industry: activeSummary.industry,
+        tech_stack: activeSummary.tech,
+        budget: activeSummary.budget,
+        timeline: activeSummary.timeline,
+        estimate: activeSummary.estimate
+    });
+
     const rawName = activeSummary.name;
     const cleanName = (!rawName || rawName === '—') ? 'Project' : rawName.replace(/\s+/g, '_');
     const filename = `Proposal_${cleanName}.pdf`;
@@ -733,6 +806,7 @@ function renderSessionList() {
     items.forEach(item => {
         item.addEventListener('click', () => {
             const sid = item.getAttribute('data-id');
+            trackGAEvent('switch_chat_session', { selected_session_id: sid });
             loadSession(sid);
         });
     });
@@ -753,6 +827,13 @@ function setupFilterTabs(tabsId, gridId) {
             tab.classList.add('active');
 
             const category = tab.getAttribute('data-category');
+            const pageContext = tabsId.includes('service') ? 'services' : 'portfolio';
+
+            trackGAEvent('filter_category_click', {
+                category: category,
+                page_context: pageContext
+            });
+
             cards.forEach(card => {
                 const cardCat = card.getAttribute('data-category');
                 if (category === 'all' || cardCat === category) {
@@ -810,6 +891,14 @@ function setupContactForm() {
         const budget = budgetInput ? budgetInput.value : '';
         const message = messageInput ? messageInput.value.trim() : '';
 
+        trackGAEvent('submit_contact_form', {
+            client_name: name,
+            client_email: email,
+            inquiry_category: category,
+            target_budget: budget,
+            message_length: message.length
+        });
+
         const subject = encodeURIComponent(`Project Inquiry from ${name || 'Client'} [${category}]`);
         const body = encodeURIComponent(
             `Name: ${name}\nEmail: ${email}\nCategory: ${category}\nTarget Budget: ${budget}\n\nProject Requirements:\n${message}`
@@ -819,5 +908,53 @@ function setupContactForm() {
 
         showToast(`✅ Thank you <strong>${escapeHTML(name || 'there')}</strong>! Opening your mail client to deliver inquiry...`);
         form.reset();
+    });
+}
+
+// --- Global GA Event Delegation for Links & CTAs ---
+function setupGlobalGATracking() {
+    document.addEventListener('click', (e) => {
+        // 1. Navigation Links
+        const navLink = e.target.closest('.main-nav a');
+        if (navLink) {
+            trackGAEvent('navigation_click', {
+                nav_label: navLink.textContent.trim(),
+                target_href: navLink.getAttribute('href')
+            });
+        }
+
+        // 2. Direct Email Anchors
+        const mailLink = e.target.closest('a[href^="mailto:"]');
+        if (mailLink) {
+            trackGAEvent('click_contact_email', {
+                email_address: mailLink.getAttribute('href').replace('mailto:', ''),
+                link_text: mailLink.textContent.trim(),
+                page_location: window.location.pathname
+            });
+        }
+
+        // 3. Service Cards CTAs
+        const serviceCta = e.target.closest('.service-cta-btn');
+        if (serviceCta) {
+            const card = serviceCta.closest('.service-card');
+            const serviceTitle = card ? card.querySelector('h3')?.textContent : 'Service';
+            trackGAEvent('click_service_cta', {
+                service_title: serviceTitle,
+                target_url: serviceCta.getAttribute('href')
+            });
+        }
+
+        // 4. Portfolio Card Buttons
+        const portfolioBtn = e.target.closest('.portfolio-btn');
+        if (portfolioBtn) {
+            const card = portfolioBtn.closest('.portfolio-card');
+            const projectTitle = card ? card.querySelector('h3')?.textContent : 'Project';
+            const isGithub = portfolioBtn.getAttribute('href')?.includes('github');
+            trackGAEvent('click_portfolio_link', {
+                project_title: projectTitle,
+                link_type: isGithub ? 'github' : 'estimate',
+                target_url: portfolioBtn.getAttribute('href')
+            });
+        }
     });
 }
