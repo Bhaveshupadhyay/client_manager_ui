@@ -51,14 +51,34 @@ let activeSummary = {
     status: 'Gathering Info'
 };
 
-// --- Google Analytics 4 (GA4) Custom Event Dispatcher ---
+// --- Google Analytics 4 (GA4) Custom Event Dispatcher with PII Sanitization ---
+function sanitizeGAParam(val) {
+    if (typeof val === 'string') {
+        // Redact email addresses to comply with PII rules
+        let sanitized = val.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[REDACTED_EMAIL]');
+        // Redact phone numbers
+        sanitized = sanitized.replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[REDACTED_PHONE]');
+        // Truncate long text strings to max 100 chars
+        if (sanitized.length > 100) {
+            sanitized = sanitized.substring(0, 97) + '...';
+        }
+        return sanitized;
+    }
+    return val;
+}
+
 function trackGAEvent(eventName, eventParams = {}) {
     try {
+        const sanitizedParams = {};
+        for (const [key, val] of Object.entries(eventParams)) {
+            sanitizedParams[key] = sanitizeGAParam(val);
+        }
+
         const enrichedParams = {
             page_path: window.location.pathname,
             page_title: document.title,
             timestamp: new Date().toISOString(),
-            ...eventParams
+            ...sanitizedParams
         };
         
         console.log(`[GA4 Event] ${eventName}:`, enrichedParams);
@@ -232,7 +252,7 @@ if (chatHistory) {
         removeFileBtn.addEventListener('click', () => {
             const filename = filePreviewName ? filePreviewName.textContent : '';
             trackGAEvent('remove_attached_file', { file_name: filename });
-            fileInput.value = '';
+            if (fileInput) fileInput.value = '';
             filePreviewChip.style.display = 'none';
         });
     }
@@ -891,9 +911,10 @@ function setupContactForm() {
         const budget = budgetInput ? budgetInput.value : '';
         const message = messageInput ? messageInput.value.trim() : '';
 
+        const emailDomain = email.includes('@') ? '@' + email.split('@')[1] : 'unknown';
         trackGAEvent('submit_contact_form', {
-            client_name: name,
-            client_email: email,
+            has_name: !!name,
+            email_domain: emailDomain,
             inquiry_category: category,
             target_budget: budget,
             message_length: message.length
@@ -926,8 +947,10 @@ function setupGlobalGATracking() {
         // 2. Direct Email Anchors
         const mailLink = e.target.closest('a[href^="mailto:"]');
         if (mailLink) {
+            const rawEmail = mailLink.getAttribute('href').replace('mailto:', '');
+            const emailDomain = rawEmail.includes('@') ? '@' + rawEmail.split('@')[1] : 'unknown';
             trackGAEvent('click_contact_email', {
-                email_address: mailLink.getAttribute('href').replace('mailto:', ''),
+                email_domain: emailDomain,
                 link_text: mailLink.textContent.trim(),
                 page_location: window.location.pathname
             });
