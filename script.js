@@ -32,10 +32,13 @@ const scopeProgressPercent = document.getElementById('scope-progress-percent');
 const scopeProgressFill = document.getElementById('scope-progress-fill');
 
 // --- Configuration ---
-const API_URL = 'https://clientmanger.tech/api/v1/chat/'; 
+const isLocalhost = typeof window !== 'undefined' && window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const BASE_URL = isLocalhost ? 'http://127.0.0.1:8000' : 'https://clientmanger.tech';
+const API_URL = `${BASE_URL}/api/v1/chat/`; 
 const API_KEY = '1234';
-const CLIENT_NAME = 'WebClient';
-const PROJECT_ID = 'fi_us_2026_4528';
+const CLIENT_NAME = '';
+let currentProjectId = null;
+let pendingActionType = null;
 
 // Single Conversation State Management
 let currentSessionId = 'single_workspace_session';
@@ -93,20 +96,18 @@ function trackGAEvent(eventName, eventParams = {}) {
 // --- Initial Setup on DOM Load ---
 window.addEventListener('DOMContentLoaded', () => {
     // 1. Ping Server
-    fetch('https://clientmanger.tech/')
+    fetch(`${BASE_URL}/`)
         .then(() => console.log("Server pinged successfully."))
         .catch((e) => console.log("Ping sent (ignoring network errors)."));
 
     // 2. Initialize Theme
     const savedTheme = localStorage.getItem('theme') || 'light';
     if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
         document.body.setAttribute('data-theme', 'dark');
-        if (sunIcon) sunIcon.style.display = 'block';
-        if (moonIcon) moonIcon.style.display = 'none';
     } else {
+        document.documentElement.removeAttribute('data-theme');
         document.body.removeAttribute('data-theme');
-        if (sunIcon) sunIcon.style.display = 'none';
-        if (moonIcon) moonIcon.style.display = 'block';
     }
 
     // 3. Load Single Conversation Session from Local Storage (Home Workspace)
@@ -141,18 +142,16 @@ window.addEventListener('DOMContentLoaded', () => {
 // --- Theme Toggle Logic ---
 if (themeToggle) {
     themeToggle.addEventListener('click', () => {
-        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.body.getAttribute('data-theme') === 'dark';
         const newTheme = isDark ? 'light' : 'dark';
         if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
             document.body.removeAttribute('data-theme');
             localStorage.setItem('theme', 'light');
-            if (sunIcon) sunIcon.style.display = 'none';
-            if (moonIcon) moonIcon.style.display = 'block';
         } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
             document.body.setAttribute('data-theme', 'dark');
             localStorage.setItem('theme', 'dark');
-            if (sunIcon) sunIcon.style.display = 'block';
-            if (moonIcon) moonIcon.style.display = 'none';
         }
         trackGAEvent('toggle_theme', { theme: newTheme });
     });
@@ -296,6 +295,15 @@ async function handleSend(triggerSource = 'send_button') {
     parseSummaryText(text, true);
 
     try {
+        const payload = {
+            message: text,
+            client_name: CLIENT_NAME,
+            project_id: currentProjectId
+        };
+        if (pendingActionType) {
+            payload.action_type = pendingActionType;
+        }
+
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
@@ -303,18 +311,19 @@ async function handleSend(triggerSource = 'send_button') {
                 'X-API-Key': API_KEY,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                message: text,
-                client_name: CLIENT_NAME,
-                project_id: PROJECT_ID
-            })
+            body: JSON.stringify(payload)
         });
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         
+        if (data.project_id) {
+            currentProjectId = data.project_id;
+        }
+        pendingActionType = null;
+
         removeTypingIndicator(typingId);
-        appendMessage(data.message, 'ai');
+        appendMessage(data.message, 'ai', data.action);
         parseSummaryText(data.message, false);
 
     } catch (error) {
@@ -346,12 +355,14 @@ async function handleFileUpload() {
     showToast(`Uploading specification: <strong>${escapeHTML(file.name)}</strong>...`);
 
     const formData = new FormData();
-    formData.append('project_id', PROJECT_ID);
+    if (currentProjectId) {
+        formData.append('project_id', currentProjectId);
+    }
     formData.append('overwrite', 'true');
     formData.append('file', file);
 
     try {
-        const response = await fetch('https://clientmanger.tech/api/v1/file/upload', {
+        const response = await fetch(`${BASE_URL}/api/v1/file/upload`, {
             method: 'POST',
             headers: {
                 'accept': 'application/json',
@@ -365,7 +376,7 @@ async function handleFileUpload() {
 
         trackGAEvent('upload_file_success', {
             file_name: file.name,
-            project_id: PROJECT_ID
+            project_id: currentProjectId
         });
 
         appendMessage(`Attached specification document: **${file.name}** (Indexed into project workspace).`, 'user');
@@ -527,7 +538,24 @@ function updateSummaryUI() {
 }
 
 // --- Render Chat Bubbles ---
-function appendMessage(text, sender) {
+function triggerStartNewProject(btn) {
+    if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor = 'not-allowed';
+    }
+    pendingActionType = 'start_new_project';
+    currentProjectId = null;
+    
+    appendMessage("Let's build your new project from scratch.\n\nWhat type of application are you looking to build (e.g., SaaS platform, mobile app, AI system), and what are the key features or tech stack you have in mind?", 'ai');
+    
+    saveSessionToStorage();
+    if (chatInput) {
+        chatInput.focus();
+    }
+}
+
+function appendMessage(text, sender, action = null) {
     if (!chatHistory) return;
 
     const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
@@ -537,9 +565,23 @@ function appendMessage(text, sender) {
     const bubbleClass = isUser ? 'user-bubble' : 'ai-bubble';
     const senderName = isUser ? 'You' : 'Bhavesh AI';
 
+    let actionBtnHtml = '';
+    if (action === 'start_new_project') {
+        actionBtnHtml = `
+            <div class="chat-action-wrapper" style="margin-top: 12px;">
+                <button class="start-new-project-btn" onclick="triggerStartNewProject(this)">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 6px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Start a New Project
+                </button>
+            </div>
+        `;
+    }
+
     const avatarSvg = isUser 
         ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
         : `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
+
+    const bubbleContent = formatMessageMarkdown(text) + actionBtnHtml;
 
     const html = `
         <div class="message-row ${rowClass}">
@@ -548,7 +590,7 @@ function appendMessage(text, sender) {
             </div>
             <div class="bubble-container">
                 <span class="message-sender">${senderName}</span>
-                <div class="chat-bubble ${bubbleClass}">${formatMessageMarkdown(text)}</div>
+                <div class="chat-bubble ${bubbleClass}">${bubbleContent}</div>
                 <span class="message-time">${time}</span>
             </div>
         </div>
@@ -593,7 +635,9 @@ function scrollToBottom() {
 
 // Markdown formatting helper
 function formatMessageMarkdown(text) {
-    let formatted = escapeHTML(text);
+    if (!text) return '';
+    let cleaned = text.replace(/<br\s*[\/]?>/gi, '\n');
+    let formatted = escapeHTML(cleaned);
     formatted = formatted.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
     formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     formatted = formatted.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
@@ -660,6 +704,8 @@ Contact: bhaveshupadhyay929@gmail.com
 
 // Single Conversation Storage Manager
 function resetConversation() {
+    currentProjectId = null;
+    pendingActionType = null;
     activeSummary = {
         name: '—',
         industry: '—',
@@ -715,7 +761,9 @@ function saveSessionToStorage() {
 
     const sessionData = {
         messages: messages,
-        summary: { ...activeSummary }
+        summary: { ...activeSummary },
+        projectId: currentProjectId,
+        pendingActionType: pendingActionType
     };
 
     localStorage.setItem('ai_single_chat_session', JSON.stringify(sessionData));
@@ -737,6 +785,8 @@ function loadSessionFromStorage() {
 
         if (chatHistory) chatHistory.innerHTML = '';
         activeSummary = session.summary ? { ...session.summary } : { ...activeSummary };
+        currentProjectId = session.projectId || null;
+        pendingActionType = session.pendingActionType || null;
 
         session.messages.forEach(msg => {
             const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
