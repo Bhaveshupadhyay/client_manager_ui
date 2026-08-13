@@ -45,3 +45,5 @@ build/
 # API Specification files
 openapi.json
 
+graphify-out/
+
