@@ -32,7 +32,8 @@ const scopeProgressPercent = document.getElementById('scope-progress-percent');
 const scopeProgressFill = document.getElementById('scope-progress-fill');
 
 // --- Configuration ---
-const BASE_URL = 'http://127.0.0.1:8000';
+const isLocalhost = typeof window !== 'undefined' && window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const BASE_URL = isLocalhost ? 'http://127.0.0.1:8000' : 'https://clientmanger.tech';
 const API_URL = `${BASE_URL}/api/v1/chat/`; 
 const API_KEY = '1234';
 const CLIENT_NAME = '';
@@ -104,13 +105,9 @@ window.addEventListener('DOMContentLoaded', () => {
     if (savedTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
         document.body.setAttribute('data-theme', 'dark');
-        if (sunIcon) sunIcon.style.display = 'block';
-        if (moonIcon) moonIcon.style.display = 'none';
     } else {
         document.documentElement.removeAttribute('data-theme');
         document.body.removeAttribute('data-theme');
-        if (sunIcon) sunIcon.style.display = 'none';
-        if (moonIcon) moonIcon.style.display = 'block';
     }
 
     // 3. Load Single Conversation Session from Local Storage (Home Workspace)
@@ -151,14 +148,10 @@ if (themeToggle) {
             document.documentElement.removeAttribute('data-theme');
             document.body.removeAttribute('data-theme');
             localStorage.setItem('theme', 'light');
-            if (sunIcon) sunIcon.style.display = 'none';
-            if (moonIcon) moonIcon.style.display = 'block';
         } else {
             document.documentElement.setAttribute('data-theme', 'dark');
             document.body.setAttribute('data-theme', 'dark');
             localStorage.setItem('theme', 'dark');
-            if (sunIcon) sunIcon.style.display = 'block';
-            if (moonIcon) moonIcon.style.display = 'none';
         }
         trackGAEvent('toggle_theme', { theme: newTheme });
     });
@@ -588,9 +581,7 @@ function appendMessage(text, sender, action = null) {
         ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
         : `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
 
-    const bubbleContent = (text.includes('<button') || text.includes('start-new-project-btn'))
-        ? text 
-        : formatMessageMarkdown(text) + actionBtnHtml;
+    const bubbleContent = formatMessageMarkdown(text) + actionBtnHtml;
 
     const html = `
         <div class="message-row ${rowClass}">
