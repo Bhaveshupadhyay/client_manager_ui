@@ -125,9 +125,10 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 4. Setup Filter Tabs (Services & Portfolio)
+    // 4. Setup Filter Tabs (Services, Portfolio & Testimonials)
     setupFilterTabs('service-filter-tabs', 'services-grid');
     setupFilterTabs('portfolio-filter-tabs', 'portfolio-grid');
+    setupFilterTabs('testimonial-filter-tabs', 'testimonials-grid');
 
     // 5. Setup Animated Stats Counters (About Page)
     setupStatsCounters();
@@ -157,13 +158,35 @@ if (themeToggle) {
     });
 }
 
-// --- Responsive Nav & Sidebar Menu Toggles ---
+// --- Responsive Nav & Mobile Drawer Toggles ---
 if (mobileMenuToggle) {
-    mobileMenuToggle.addEventListener('click', () => {
+    mobileMenuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
         const isOpen = mainNav && mainNav.classList.contains('open');
         if (mainNav) mainNav.classList.toggle('open');
-        if (leftSidebar) leftSidebar.classList.toggle('open');
         trackGAEvent('toggle_mobile_menu', { state: !isOpen ? 'open' : 'closed' });
+    });
+}
+
+// Auto-close mobile navigation drawer when tapping outside or tapping a link
+document.addEventListener('click', (e) => {
+    if (mainNav && mainNav.classList.contains('open')) {
+        if (!mainNav.contains(e.target) && (!mobileMenuToggle || !mobileMenuToggle.contains(e.target))) {
+            mainNav.classList.remove('open');
+        }
+    }
+    if (leftSidebar && leftSidebar.classList.contains('open')) {
+        if (!leftSidebar.contains(e.target)) {
+            leftSidebar.classList.remove('open');
+        }
+    }
+});
+
+if (mainNav) {
+    mainNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mainNav.classList.remove('open');
+        });
     });
 }
 
@@ -831,7 +854,7 @@ function setupFilterTabs(tabsId, gridId) {
     if (!tabsContainer || !gridContainer) return;
 
     const tabs = tabsContainer.querySelectorAll('.filter-tab');
-    const cards = gridContainer.querySelectorAll('.service-card, .portfolio-card');
+    const cards = gridContainer.querySelectorAll('.service-card, .portfolio-card, .testimonial-card');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -839,7 +862,7 @@ function setupFilterTabs(tabsId, gridId) {
             tab.classList.add('active');
 
             const category = tab.getAttribute('data-category');
-            const pageContext = tabsId.includes('service') ? 'services' : 'portfolio';
+            const pageContext = tabsId.includes('service') ? 'services' : (tabsId.includes('testimonial') ? 'testimonials' : 'portfolio');
 
             trackGAEvent('filter_category_click', {
                 category: category,
