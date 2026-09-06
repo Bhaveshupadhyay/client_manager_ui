@@ -125,9 +125,10 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 4. Setup Filter Tabs (Services & Portfolio)
+    // 4. Setup Filter Tabs (Services, Portfolio & Testimonials)
     setupFilterTabs('service-filter-tabs', 'services-grid');
     setupFilterTabs('portfolio-filter-tabs', 'portfolio-grid');
+    setupFilterTabs('testimonial-filter-tabs', 'testimonials-grid');
 
     // 5. Setup Animated Stats Counters (About Page)
     setupStatsCounters();
@@ -831,7 +832,7 @@ function setupFilterTabs(tabsId, gridId) {
     if (!tabsContainer || !gridContainer) return;
 
     const tabs = tabsContainer.querySelectorAll('.filter-tab');
-    const cards = gridContainer.querySelectorAll('.service-card, .portfolio-card');
+    const cards = gridContainer.querySelectorAll('.service-card, .portfolio-card, .testimonial-card');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -839,7 +840,7 @@ function setupFilterTabs(tabsId, gridId) {
             tab.classList.add('active');
 
             const category = tab.getAttribute('data-category');
-            const pageContext = tabsId.includes('service') ? 'services' : 'portfolio';
+            const pageContext = tabsId.includes('service') ? 'services' : (tabsId.includes('testimonial') ? 'testimonials' : 'portfolio');
 
             trackGAEvent('filter_category_click', {
                 category: category,
