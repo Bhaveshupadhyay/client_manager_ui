@@ -2466,104 +2466,239 @@ body {
 }
 
 /* ==========================================================================
-   TESTIMONIALS PAGE STYLING
+   TESTIMONIALS & FIVERR REVIEWS STYLING
    ========================================================================== */
-.reviews-summary-bar {
+
+/* Nav Icon alignment helper */
+.nav-icon {
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 4px;
+}
+
+/* Unified Official Fiverr Showcase Hub */
+.fiverr-showcase-hub {
     background: var(--bg-card);
-    border: 1px solid var(--border-glass);
+    border: 1px solid rgba(29, 191, 115, 0.3);
     border-radius: var(--radius-xl);
-    padding: 24px 32px;
-    margin-bottom: 32px;
+    padding: 30px 36px;
+    margin-bottom: 36px;
+    box-shadow: 0 10px 30px -10px rgba(29, 191, 115, 0.15), var(--shadow-sm);
+    backdrop-filter: blur(12px);
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
     align-items: center;
-    gap: 20px;
-    box-shadow: var(--shadow-sm);
-    backdrop-filter: blur(10px);
+    justify-content: space-between;
+    gap: 28px;
+    position: relative;
+    overflow: hidden;
 }
 
-.summary-stat-item {
+[data-theme="dark"] .fiverr-showcase-hub {
+    background: linear-gradient(135deg, rgba(16, 24, 39, 0.95), rgba(15, 23, 42, 0.95));
+    border-color: rgba(29, 191, 115, 0.35);
+    box-shadow: 0 10px 35px -10px rgba(29, 191, 115, 0.2);
+}
+
+.fiverr-showcase-hub::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(29, 191, 115, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.showcase-hub-brand {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 18px;
+    min-width: 260px;
 }
 
-.summary-stat-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
+.fiverr-icon-box {
+    width: 54px;
+    height: 54px;
+    background: #1dbf73;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.45rem;
-    background: rgba(99, 102, 241, 0.12);
-    color: var(--primary-light);
+    box-shadow: 0 6px 16px rgba(29, 191, 115, 0.35);
+    flex-shrink: 0;
 }
 
-.summary-stat-icon.green {
-    background: rgba(29, 191, 115, 0.14);
+.fiverr-icon-box svg {
+    width: 32px;
+    height: 32px;
+}
+
+.showcase-brand-details h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.fiverr-level-badge {
+    display: inline-block;
+    background: #1dbf73;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.showcase-brand-details p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0 0 8px 0;
+}
+
+.fiverr-profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: #1dbf73;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
-.summary-stat-icon.gold {
-    background: rgba(245, 158, 11, 0.14);
-    color: #f59e0b;
+.fiverr-profile-link:hover {
+    color: #19a463;
+    transform: translateX(2px);
 }
 
-.summary-stat-details .stat-big {
-    font-size: 1.5rem;
+.fiverr-profile-link svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Right Metric Grid in Hub */
+.showcase-hub-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    flex-grow: 1;
+    max-width: 780px;
+}
+
+.hub-metric-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.hub-metric-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(29, 191, 115, 0.4);
+}
+
+.hub-metric-card .stat-val {
+    font-size: 1.35rem;
     font-weight: 800;
     color: var(--text-primary);
     font-family: Outfit, sans-serif;
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 2px;
+}
+
+.hub-metric-card .stat-val span.gold-star {
+    color: #f59e0b;
+    font-size: 1.15rem;
+}
+
+.hub-metric-card .stat-lbl {
+    font-size: 0.725rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Filter Tabs */
+.filter-tabs-container {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 36px auto;
+    max-width: 1100px;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 8px;
+    background: var(--bg-surface);
+    padding: 8px 12px;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-sm);
+    flex-wrap: wrap;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.filter-tab {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.825rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
     gap: 6px;
 }
 
-.summary-stat-details .stat-desc {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+.filter-tab:hover {
+    color: var(--primary-light);
+    background: rgba(99, 102, 241, 0.08);
 }
 
-.fiverr-profile-badge-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 18px;
-    border-radius: 30px;
-    background: rgba(29, 191, 115, 0.1);
-    border: 1px solid rgba(29, 191, 115, 0.35);
-    color: #1dbf73;
-    font-weight: 700;
-    font-size: 0.85rem;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-
-.fiverr-profile-badge-btn:hover {
-    background: #1dbf73;
+.filter-tab.active {
+    background: var(--primary-gradient);
     color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(29, 191, 115, 0.35);
+    border-color: transparent;
+    box-shadow: 0 4px 14px var(--primary-glow);
 }
 
-.fiverr-profile-badge-btn svg {
-    width: 20px;
-    height: 20px;
-}
-
+/* Testimonials Grid */
 .testimonials-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
     gap: 24px;
+    margin-bottom: 60px;
 }
 
 .testimonial-card {
     background: var(--bg-card);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-xl);
-    padding: 28px;
+    padding: 26px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -2582,19 +2717,21 @@ body {
 .testimonial-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
 }
 
 .testimonial-author-info {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
 }
 
 .testimonial-avatar {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -2605,6 +2742,15 @@ body {
     text-transform: uppercase;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     flex-shrink: 0;
+    overflow: hidden;
+    background: var(--primary-gradient);
+}
+
+.testimonial-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .avatar-grad-1 { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
@@ -2614,14 +2760,18 @@ body {
 .avatar-grad-5 { background: linear-gradient(135deg, #f59e0b, #d97706); }
 .avatar-grad-6 { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
 
+.author-meta {
+    min-width: 0;
+}
+
 .author-meta h4 {
-    font-size: 1rem;
+    font-size: 0.975rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 3px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .country-tag {
@@ -2637,18 +2787,75 @@ body {
     font-size: 0.95rem;
 }
 
+/* Badges Meta Row */
+.testimonial-badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.client-service-tag {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-light);
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.725rem;
+}
+
+.order-price-pill {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+[data-theme="dark"] .order-price-pill {
+    background: rgba(16, 185, 129, 0.18);
+    color: #34d399;
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+.repeat-buyer-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+[data-theme="dark"] .repeat-buyer-pill {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.35);
+}
+
+/* Star Rating */
 .star-rating {
     display: flex;
     align-items: center;
     gap: 3px;
     color: #f59e0b;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .star-rating svg {
     width: 17px;
     height: 17px;
     fill: #f59e0b;
+    flex-shrink: 0;
 }
 
 .star-rating-score {
@@ -2658,13 +2865,13 @@ body {
     margin-left: 6px;
 }
 
+/* Testimonial Body */
 .testimonial-body {
     font-size: 0.925rem;
-    line-height: 1.62;
+    line-height: 1.65;
     color: var(--text-secondary);
-    margin-bottom: 22px;
+    margin-bottom: 18px;
     flex-grow: 1;
-    position: relative;
 }
 
 .testimonial-body blockquote {
@@ -2672,6 +2879,47 @@ body {
     font-style: normal;
 }
 
+/* Work Sample Delivery Preview */
+.work-sample-box {
+    margin: 10px 0 16px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border-glass);
+    background: var(--bg-surface);
+    transition: border-color 0.2s ease;
+}
+
+.work-sample-box:hover {
+    border-color: var(--primary-light);
+}
+
+.work-sample-thumb-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.work-sample-thumb-link:hover {
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.06);
+}
+
+.work-sample-thumb-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--border-glass);
+    flex-shrink: 0;
+}
+
+/* Card Footer */
 .testimonial-card-footer {
     display: flex;
     justify-content: space-between;
@@ -2693,6 +2941,7 @@ body {
 
 .fiverr-verified-badge:hover {
     opacity: 0.85;
+    text-decoration: underline;
 }
 
 .fiverr-verified-badge svg {
@@ -2700,29 +2949,91 @@ body {
     height: 15px;
 }
 
-.client-service-tag {
-    background: rgba(99, 102, 241, 0.1);
-    color: var(--primary-light);
-    padding: 3px 9px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.725rem;
+.review-date-badge {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
 }
 
-/* Testimonial Responsive Queries */
-@media (max-width: 900px) {
-    .flagship-grid {
-        grid-template-columns: 1fr;
+/* Banner CTA Buttons */
+.banner-cta .cta-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.btn-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    color: var(--primary-hover);
+    text-decoration: none;
+    padding: 13px 26px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.925rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: all 0.25s ease;
+}
+
+.btn-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-fiverr-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.925rem;
+    backdrop-filter: blur(8px);
+    transition: all 0.25s ease;
+}
+
+.btn-fiverr-outline:hover {
+    background: #ffffff;
+    color: #1dbf73;
+    border-color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* Responsive Queries for Testimonials */
+@media (max-width: 1024px) {
+    .showcase-hub-metrics {
+        grid-template-columns: repeat(2, 1fr);
     }
-    .flagship-features {
-        grid-template-columns: 1fr;
+}
+
+@media (max-width: 768px) {
+    .fiverr-showcase-hub {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px;
+    }
+    .showcase-hub-metrics {
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
     }
     .testimonials-grid {
         grid-template-columns: 1fr;
     }
-    .reviews-summary-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
+    .filter-tabs {
+        padding: 6px;
+        gap: 6px;
+    }
+    .filter-tab {
+        padding: 6px 12px;
+        font-size: 0.775rem;
     }
 }
