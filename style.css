@@ -4022,8 +4022,64 @@ body {
     transition: opacity 0.2s;
 }
 
-.chatbox-input-form button:hover {
-    opacity: 0.9;
+/* Test Sentences Widget in Auto-DM Simulation */
+.chatbox-test-sentences {
+    padding: 10px 14px;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-glass);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.test-sentences-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--primary-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.test-sentence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    max-height: 140px;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.test-sentence-grid::-webkit-scrollbar {
+    width: 4px;
+}
+
+.test-sentence-grid::-webkit-scrollbar-thumb {
+    background: var(--border-glass);
+    border-radius: 4px;
+}
+
+.test-sentence-chip {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-glass);
+    color: var(--text-secondary);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.725rem;
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.test-sentence-chip:hover {
+    color: var(--text-primary);
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.08);
+    transform: translateY(-1px);
 }
 
 .chatbox-metrics-bar {
@@ -4384,6 +4440,9 @@ body {
     .platform-stats-grid {
         grid-template-columns: 1fr;
     }
+    .test-sentence-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Dedicated Auto-DM Simulation Section Above Projects */
@@ -4461,6 +4520,13 @@ body {
     background: rgba(236, 72, 153, 0.12);
     color: var(--pink-accent);
     border-color: rgba(236, 72, 153, 0.3);
+}
+
+.sim-badge.hot {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.18) 0%, rgba(239, 68, 68, 0.15) 100%);
+    color: var(--pink-accent);
+    border-color: rgba(236, 72, 153, 0.38);
+    font-weight: 800;
 }
 
 .auto-dm-showcase-info h2 {
