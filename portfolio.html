@@ -225,9 +225,19 @@
                                             <span class="chatbox-online-indicator"></span>
                                         </div>
                                         <div class="chatbox-user-meta">
-                                            <h5>Edu García &bull; Auto-DM Bot</h5>
-                                            <span>Movement &amp; Health Coach (Online)</span>
+                                            <h5 id="edu-persona-title">Edu García &bull; Auto-DM Bot</h5>
+                                            <span id="edu-channel-status">Online &bull; Instagram DM</span>
                                         </div>
+                                    </div>
+                                    <button type="button" class="chatbox-reset-btn" onclick="resetEduSimulation()" title="Reset demo thread">Reset</button>
+                                </div>
+
+                                <!-- Multi-Channel Selector Bar -->
+                                <div class="chatbox-channel-bar">
+                                    <div class="chatbox-channels">
+                                        <button type="button" class="chatbox-channel-btn active" onclick="switchEduChannel('instagram', this)">Instagram DM</button>
+                                        <button type="button" class="chatbox-channel-btn" onclick="switchEduChannel('whatsapp', this)">WhatsApp</button>
+                                        <button type="button" class="chatbox-channel-btn" onclick="switchEduChannel('web', this)">Campus Web</button>
                                     </div>
                                     <span class="chatbox-status-chip">AI Active</span>
                                 </div>
@@ -262,9 +272,25 @@
 
                                 <!-- Interactive Quick Prompts -->
                                 <div class="chatbox-quick-prompts">
-                                    <button type="button" class="quick-prompt-btn" onclick="sendEduPrompt('¿Cuáles son los precios de los cursos?')">Precios de cursos</button>
-                                    <button type="button" class="quick-prompt-btn" onclick="sendEduPrompt('¿Cómo aliviar dolor de espalda?')">Rutinas para espalda</button>
-                                    <button type="button" class="quick-prompt-btn" onclick="sendEduPrompt('Quiero una sesión privada')">Agendar sesión 1 a 1</button>
+                                    <button type="button" class="quick-prompt-btn" onclick="sendEduPrompt('¿Cuáles son los precios de los cursos y programas?')">Precios y Programas</button>
+                                    <button type="button" class="quick-prompt-btn" onclick="sendEduPrompt('¿Cómo aliviar dolor lumbar y rigidez?')">Dolor lumbar</button>
+                                    <button type="button" class="quick-prompt-btn" onclick="sendEduPrompt('Quiero agendar una sesión privada')">Agendar sesión 1 a 1</button>
+                                </div>
+
+                                <!-- Custom Interactive Message Input Form -->
+                                <form class="chatbox-input-form" onsubmit="handleEduCustomSubmit(event)">
+                                    <input type="text" id="edu-custom-input" placeholder="Escribe un mensaje para simular respuesta..." maxlength="140" autocomplete="off">
+                                    <button type="submit" title="Send message">
+                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                                        <span>Send</span>
+                                    </button>
+                                </form>
+
+                                <!-- Real-Time Simulation Metrics -->
+                                <div class="chatbox-metrics-bar">
+                                    <span>Status: <strong>Active</strong></span>
+                                    <span>Latency: <strong>&lt; 550ms</strong></span>
+                                    <span>Persona: <strong>Edu García</strong></span>
                                 </div>
                             </div>
                         </div>
@@ -505,34 +531,126 @@
 
     <!-- Interactive Simulator Script for Portfolio Page -->
     <script>
-        function sendEduPrompt(text) {
+        const eduChannelLabels = {
+            instagram: "Online • Instagram DM",
+            whatsapp: "Online • WhatsApp Business",
+            web: "Online • Campus Live Chat"
+        };
+
+        function switchEduChannel(channel, btn) {
+            document.querySelectorAll('.chatbox-channel-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            const statusEl = document.getElementById('edu-channel-status');
+            if (statusEl) statusEl.textContent = eduChannelLabels[channel] || eduChannelLabels.instagram;
+        }
+
+        function appendEduUserMessage(text) {
             const body = document.getElementById('edumovimiento-chat-body');
             if (!body) return;
-
-            // Append user bubble
-            const userBubble = document.createElement('div');
-            userBubble.className = 'chatbox-bubble user';
-            userBubble.textContent = text;
-            body.appendChild(userBubble);
-
-            // Simulate bot response after short delay
-            setTimeout(() => {
-                const botBubble = document.createElement('div');
-                botBubble.className = 'chatbox-bubble bot';
-
-                if (text.includes('Precios') || text.includes('precios')) {
-                    botBubble.innerHTML = 'Los planes de Edu parten desde programas introductorios de movilidad hasta membresías completas de acompañamiento continuo. Puedes consultar los detalles actualizados en la sección de <a href="https://edumovimiento.com/" target="_blank" style="color: #10b981; font-weight: 700;">Precios de edumovimiento.com</a>.';
-                } else if (text.includes('espalda') || text.includes('Espalda')) {
-                    botBubble.innerHTML = 'Para aliviar la tensión lumbar recomendamos comenzar con los ejercicios de respiración diafragmática y rotaciones de cadera del módulo básico. ¡Disponibles dentro del campus online!';
-                } else {
-                    botBubble.innerHTML = '¡Excelente! Edu tiene disponibilidad esta semana para valoraciones funcionales. Accede directamente a su agenda en <a href="https://edumovimiento.com/" target="_blank" style="color: #10b981; font-weight: 700;">edumovimiento.com</a>.';
-                }
-
-                body.appendChild(botBubble);
-                body.scrollTop = body.scrollHeight;
-            }, 600);
-
+            const bubble = document.createElement('div');
+            bubble.className = 'chatbox-bubble user';
+            bubble.textContent = text;
+            body.appendChild(bubble);
             body.scrollTop = body.scrollHeight;
+        }
+
+        function showEduTyping() {
+            const body = document.getElementById('edumovimiento-chat-body');
+            if (!body) return null;
+            const typing = document.createElement('div');
+            typing.className = 'chatbox-typing';
+            typing.id = 'active-edu-typing';
+            typing.innerHTML = '<span>Edu García está escribiendo</span><div class="chatbox-typing-dots"><span></span><span></span><span></span></div>';
+            body.appendChild(typing);
+            body.scrollTop = body.scrollHeight;
+            return typing;
+        }
+
+        function removeEduTyping() {
+            const typing = document.getElementById('active-edu-typing');
+            if (typing) typing.remove();
+        }
+
+        function appendEduBotMessage(html) {
+            const body = document.getElementById('edumovimiento-chat-body');
+            if (!body) return;
+            const bubble = document.createElement('div');
+            bubble.className = 'chatbox-bubble bot';
+            bubble.innerHTML = html;
+            body.appendChild(bubble);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function getEduBotReply(query) {
+            const lower = query.toLowerCase();
+            if (lower.includes('precio') || lower.includes('cost') || lower.includes('rate') || lower.includes('plan') || lower.includes('membresia') || lower.includes('tarifa') || lower.includes('cuanto')) {
+                return 'Los planes de Edu García parten desde programas introductorios de movilidad articular hasta membresías continuas con soporte. Puedes consultar los detalles actualizados en la sección de <a href="https://edumovimiento.com/" target="_blank" style="color: #10b981; font-weight: 700;">Precios de edumovimiento.com</a>.';
+            } else if (lower.includes('espalda') || lower.includes('back') || lower.includes('dolor') || lower.includes('pain') || lower.includes('lumbar') || lower.includes('cadera') || lower.includes('postura') || lower.includes('rigidez')) {
+                return 'Para aliviar la tensión lumbar y rigidez de cadera recomendamos iniciar con las respiraciones diafragmáticas y movilizaciones torácicas del módulo introductorio. ¡Todo guiado paso a paso dentro del campus online!';
+            } else if (lower.includes('agendar') || lower.includes('sesion') || lower.includes('cita') || lower.includes('consulta') || lower.includes('book') || lower.includes('privada') || lower.includes('1 a 1') || lower.includes('call')) {
+                return '¡Perfecto! Edu cuenta con cupos semanales para valoraciones funcionales 1 a 1. Accede directamente a la agenda oficial en <a href="https://edumovimiento.com/" target="_blank" style="color: #10b981; font-weight: 700;">edumovimiento.com</a>.';
+            } else if (lower.includes('online') || lower.includes('presencial') || lower.includes('españa') || lower.includes('madrid') || lower.includes('remote') || lower.includes('internacional')) {
+                return 'Brindamos sesiones presenciales en España y programas de asesoría personalizada online por videollamada para alumnos en Europa, Latinoamérica y Estados Unidos.';
+            } else if (lower.includes('bot') || lower.includes('auto') || lower.includes('dm') || lower.includes('ai') || lower.includes('persona')) {
+                return 'Este bot de Auto-DM fue diseñado a medida por Bhavesh Upadhyay para interactuar de forma autónoma con alumnos y prospectos, manteniendo el tono auténtico de Edu García 24/7.';
+            } else {
+                return '¡Gracias por tu mensaje! El bot de Auto-DM de Edu García evalúa tus objetivos corporales y te orienta hacia la mejor rutina. Puedes explorar el campus completo en <a href="https://edumovimiento.com/" target="_blank" style="color: #10b981; font-weight: 700;">edumovimiento.com</a> o consultar una de las opciones rápidas arriba.';
+            }
+        }
+
+        function sendEduPrompt(text) {
+            appendEduUserMessage(text);
+            showEduTyping();
+            setTimeout(() => {
+                removeEduTyping();
+                appendEduBotMessage(getEduBotReply(text));
+            }, 550);
+        }
+
+        function handleEduCustomSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('edu-custom-input');
+            if (!input) return;
+            const val = input.value.trim();
+            if (!val) return;
+            input.value = '';
+
+            appendEduUserMessage(val);
+            showEduTyping();
+
+            setTimeout(() => {
+                removeEduTyping();
+                appendEduBotMessage(getEduBotReply(val));
+            }, 550);
+        }
+
+        function resetEduSimulation() {
+            const body = document.getElementById('edumovimiento-chat-body');
+            if (!body) return;
+            body.innerHTML = `
+                <div class="chatbox-bubble bot">
+                    ¡Hola! Soy el asistente virtual de Edu García. ¿Buscas mejorar tu movilidad articular, aliviar molestias o preparar un entrenamiento funcional a medida?
+                </div>
+                <div class="chatbox-bubble user">
+                    Paso muchas horas sentado en la oficina y tengo tensión lumbar y rigidez en las caderas.
+                </div>
+                <div class="chatbox-bubble bot">
+                    ¡Te entiendo perfectamente! Edu diseñó justo el <strong>Protocolo de Movilidad Natural</strong> para descomprimir la columna y recuperar el rango articular de la cadera.
+                    <div class="chatbox-cta-action">
+                        <a href="https://edumovimiento.com/" target="_blank" rel="noopener noreferrer" class="chatbox-cta-btn">
+                            <span>Agendar Consulta 1 a 1 en edumovimiento.com &rarr;</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="chatbox-bubble user">
+                    ¿Las consultas son presenciales en España o también online?
+                </div>
+                <div class="chatbox-bubble bot">
+                    Realizamos sesiones presenciales en España y consultas online personalizadas por videollamada para clientes internacionales en todo el mundo.
+                </div>
+            `;
+            const input = document.getElementById('edu-custom-input');
+            if (input) input.value = '';
         }
 
         let isSimulating = false;
