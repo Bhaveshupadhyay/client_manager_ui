@@ -1447,6 +1447,8 @@ body {
 .gradient-bg-1 { background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%); }
 .gradient-bg-2 { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); }
 .gradient-bg-3 { background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); }
+.gradient-bg-4 { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+.gradient-bg-5 { background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); }
 
 .portfolio-badge {
     position: absolute;

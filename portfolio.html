@@ -55,7 +55,6 @@
                     <li><a href="index.html"><span class="nav-icon">💬</span> Workspace</a></li>
                     <li><a href="service.html"><span class="nav-icon">⚡</span> Services</a></li>
                     <li><a href="portfolio.html" class="active"><span class="nav-icon">🚀</span> Portfolio</a></li>
-                    <li><a href="projects.html"><span class="nav-icon">💼</span> Projects</a></li>
                     <li><a href="testimonials.html"><span class="nav-icon">⭐</span> Testimonials</a></li>
                     <li><a href="about.html"><span class="nav-icon">🏛️</span> About</a></li>
                     <li><a href="contact.html"><span class="nav-icon">📬</span> Contact</a></li>
@@ -89,17 +88,70 @@
         <!-- Category Filter Tabs -->
         <div class="filter-tabs-container">
             <div class="filter-tabs" id="portfolio-filter-tabs">
-                <button class="filter-tab active" data-category="all">All Projects (6)</button>
-                <button class="filter-tab" data-category="fintech">FinTech</button>
-                <button class="filter-tab" data-category="ai">AI SaaS</button>
-                <button class="filter-tab" data-category="logistics">Logistics</button>
+                <button class="filter-tab active" data-category="all">All Projects (8)</button>
                 <button class="filter-tab" data-category="health">HealthTech</button>
+                <button class="filter-tab" data-category="media">OTT &amp; Media</button>
+                <button class="filter-tab" data-category="ai">AI SaaS</button>
+                <button class="filter-tab" data-category="fintech">FinTech</button>
+                <button class="filter-tab" data-category="logistics">Logistics</button>
             </div>
         </div>
 
         <!-- Portfolio Grid -->
         <section class="portfolio-grid" id="portfolio-grid">
             
+            <!-- Live Production Project: Edu Garcia Movimiento -->
+            <div class="portfolio-card" data-category="health">
+                <div class="portfolio-img-container mockup-svg-container gradient-bg-4">
+                    <div class="svg-mockup-graphic">
+                        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+                    </div>
+                    <span class="portfolio-badge">HealthTech &amp; Fitness</span>
+                    <span class="impact-pill">Live in Production</span>
+                </div>
+                <div class="portfolio-info">
+                    <h3>Edu Garcia Movimiento Platform</h3>
+                    <p>Full-stack online training and movement campus for Spanish fitness coach Edu Garcia. Features responsive video workout modules, interactive scheduling, student subscriptions, Stripe billing, and an autonomous Auto-DM chatbox.</p>
+                    <div class="portfolio-tags">
+                        <span class="portfolio-tag">Next.js</span>
+                        <span class="portfolio-tag">Python FastAPI</span>
+                        <span class="portfolio-tag">Stripe</span>
+                        <span class="portfolio-tag">Auto-DM AI</span>
+                        <span class="portfolio-tag">Tailwind</span>
+                    </div>
+                    <div class="portfolio-actions">
+                        <a href="https://edumovimiento.com/" target="_blank" rel="noopener noreferrer" class="portfolio-btn btn-primary">Launch Live Site ↗</a>
+                        <a href="index.html?prompt=I%20want%20to%20build%20a%20platform%20like%20Edu%20Garcia%20Movimiento%20Fitness" class="portfolio-btn btn-secondary">Estimate Similar App</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Production Project: CultureBox TV Network -->
+            <div class="portfolio-card" data-category="media">
+                <div class="portfolio-img-container mockup-svg-container gradient-bg-5">
+                    <div class="svg-mockup-graphic">
+                        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                    </div>
+                    <span class="portfolio-badge">OTT Media &amp; Streaming</span>
+                    <span class="impact-pill">Live in Production</span>
+                </div>
+                <div class="portfolio-info">
+                    <h3>CultureBox TV Network</h3>
+                    <p>Broadcast-grade OTT streaming network engineered with low-latency HLS adaptive bitrate video delivery, custom web player architecture, dynamic content channels, multi-tier DRM, and CloudFront CDN.</p>
+                    <div class="portfolio-tags">
+                        <span class="portfolio-tag">React</span>
+                        <span class="portfolio-tag">Video.js</span>
+                        <span class="portfolio-tag">Node.js</span>
+                        <span class="portfolio-tag">AWS CloudFront</span>
+                        <span class="portfolio-tag">HLS</span>
+                    </div>
+                    <div class="portfolio-actions">
+                        <a href="https://cultureboxtv.com/" target="_blank" rel="noopener noreferrer" class="portfolio-btn btn-primary">Launch Live Site ↗</a>
+                        <a href="index.html?prompt=I%20want%20to%20build%20an%20OTT%20Streaming%20Platform%20like%20CultureBox%20TV" class="portfolio-btn btn-secondary">Estimate Similar App</a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Project Card 1: WealthFlow -->
             <div class="portfolio-card" data-category="fintech">
                 <div class="portfolio-img-container">
@@ -283,7 +335,6 @@
                     <li><a href="index.html">AI Workspace</a></li>
                     <li><a href="service.html">Services Grid</a></li>
                     <li><a href="portfolio.html">Featured Portfolio</a></li>
-                    <li><a href="projects.html">Live Projects</a></li>
                     <li><a href="testimonials.html">Client Testimonials</a></li>
                     <li><a href="about.html">About Agency</a></li>
                 </ul>
