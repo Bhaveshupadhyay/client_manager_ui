@@ -3047,6 +3047,11 @@ body {
     flex-shrink: 0;
 }
 
+.star-rating svg.star-fractional,
+.star-rating svg.star-fractional path {
+    fill: url(#star-grad-47);
+}
+
 .star-rating-score {
     font-size: 0.8rem;
     font-weight: 700;
