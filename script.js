@@ -854,7 +854,7 @@ function setupFilterTabs(tabsId, gridId) {
     if (!tabsContainer || !gridContainer) return;
 
     const tabs = tabsContainer.querySelectorAll('.filter-tab');
-    const cards = gridContainer.querySelectorAll('.service-card, .portfolio-card, .testimonial-card');
+    const cards = gridContainer.querySelectorAll('.service-card, .portfolio-card, .testimonial-card, .project-feature-card');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -872,7 +872,7 @@ function setupFilterTabs(tabsId, gridId) {
             cards.forEach(card => {
                 const cardCat = card.getAttribute('data-category');
                 if (category === 'all' || cardCat === category) {
-                    card.style.display = 'flex';
+                    card.style.display = '';
                 } else {
                     card.style.display = 'none';
                 }
@@ -983,14 +983,15 @@ function setupGlobalGATracking() {
         }
 
         // 4. Portfolio Card Buttons
-        const portfolioBtn = e.target.closest('.portfolio-btn');
+        const portfolioBtn = e.target.closest('.portfolio-btn, .btn-primary-launch, .btn-secondary-scope');
         if (portfolioBtn) {
-            const card = portfolioBtn.closest('.portfolio-card');
-            const projectTitle = card ? card.querySelector('h3')?.textContent : 'Project';
+            const card = portfolioBtn.closest('.portfolio-card, .project-feature-card');
+            const projectTitle = card ? (card.querySelector('h2, h3')?.textContent || 'Project') : 'Project';
             const isGithub = portfolioBtn.getAttribute('href')?.includes('github');
+            const isLive = portfolioBtn.getAttribute('href')?.includes('edumovimiento') || portfolioBtn.getAttribute('href')?.includes('cultureboxtv');
             trackGAEvent('click_portfolio_link', {
                 project_title: projectTitle,
-                link_type: isGithub ? 'github' : 'estimate',
+                link_type: isGithub ? 'github' : (isLive ? 'live_site' : 'estimate'),
                 target_url: portfolioBtn.getAttribute('href')
             });
         }
