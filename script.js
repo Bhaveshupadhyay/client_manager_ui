@@ -138,6 +138,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // 7. Setup Global Link & Action Trackers
     setupGlobalGATracking();
+
+    // 8. Setup Clickable Portfolio Project Cards
+    setupClickableProjectCards();
 });
 
 // --- Theme Toggle Logic ---
@@ -1287,5 +1290,35 @@ function setupTestimonialsSlider() {
 
     // Initial build
     buildSliderForCategory('all');
+}
+
+// --- Clickable Portfolio Project Cards ---
+function setupClickableProjectCards() {
+    const cards = document.querySelectorAll('.project-feature-card[data-project-url]');
+    cards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            // If user clicked directly on an interactive link/button inside the card, don't intercept
+            if (e.target.closest('a, button')) return;
+            const url = card.getAttribute('data-project-url');
+            if (url) {
+                trackGAEvent('click_project_card_container', {
+                    target_url: url,
+                    project_id: card.id
+                });
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
+        });
+
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (e.target.closest('a, button')) return;
+                e.preventDefault();
+                const url = card.getAttribute('data-project-url');
+                if (url) {
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                }
+            }
+        });
+    });
 }
 

@@ -3532,6 +3532,15 @@ body {
     height: 5px;
 }
 
+.project-feature-card.clickable-project-card {
+    cursor: pointer;
+}
+
+.project-feature-card.clickable-project-card:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+}
+
 /* Custom Background Image Layer According to Each Project (Vivid & Distinct) */
 .project-card-bg {
     position: absolute;
