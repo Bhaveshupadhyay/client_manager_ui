@@ -84,6 +84,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    setupReviewsCarousel();
     setupContactForm();
     setupGlobalGATracking();
 });
@@ -441,6 +442,58 @@ function loadSessionFromStorage() {
         console.error('Error reading chat session:', e);
         resetConversation();
     }
+}
+
+// --- Reviews Carousel (testimonials.html) ---
+function setupReviewsCarousel() {
+    const track = document.getElementById('reviews-track');
+    if (!track) return;
+
+    const prevBtn = document.getElementById('reviews-prev');
+    const nextBtn = document.getElementById('reviews-next');
+    const AUTO_SLIDE_MS = 4000;
+    let timer = null;
+
+    // Scroll by one card (card width + gap), wrapping around at either end
+    function step(direction) {
+        const card = track.querySelector('.review-card');
+        if (!card) return;
+        const distance = card.offsetWidth + parseFloat(getComputedStyle(track).columnGap || 0);
+        const maxScroll = track.scrollWidth - track.clientWidth;
+
+        if (direction > 0 && track.scrollLeft >= maxScroll - 4) {
+            track.scrollTo({ left: 0 });
+        } else if (direction < 0 && track.scrollLeft <= 4) {
+            track.scrollTo({ left: maxScroll });
+        } else {
+            track.scrollBy({ left: direction * distance });
+        }
+    }
+
+    function start() {
+        stop();
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        timer = setInterval(() => step(1), AUTO_SLIDE_MS);
+    }
+
+    function stop() {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => { step(-1); start(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { step(1); start(); });
+
+    // Pause while the visitor is reading or scrolling the cards themselves
+    track.addEventListener('mouseenter', stop);
+    track.addEventListener('mouseleave', start);
+    track.addEventListener('focusin', stop);
+    track.addEventListener('focusout', start);
+    track.addEventListener('touchstart', stop, { passive: true });
+    track.addEventListener('touchend', start, { passive: true });
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+
+    start();
 }
 
 // --- Contact Form (contact.html) ---

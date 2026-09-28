@@ -454,7 +454,7 @@ svg {
     width: 100%;
     max-width: var(--content-width);
     margin: 0 auto;
-    padding: 0 24px 12px;
+    padding: 0 24px 20px;
     flex-shrink: 0;
 }
 
@@ -508,17 +508,6 @@ svg {
 
 .send-btn:disabled {
     opacity: 0.3;
-}
-
-.composer-note {
-    padding-top: 8px;
-    font-size: 0.75rem;
-    color: var(--text-faint);
-    text-align: center;
-}
-
-.chat-main.is-empty .composer-note {
-    visibility: hidden;
 }
 
 .file-chip {
@@ -760,13 +749,69 @@ svg {
 
 /* Reviews */
 
-.review blockquote {
-    font-size: 1rem;
+.reviews-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.reviews-header .section-title {
+    margin-bottom: 0;
+}
+
+.reviews-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.reviews-track {
+    display: flex;
+    gap: 16px;
+    padding: 4px 0 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+}
+
+.reviews-track::-webkit-scrollbar {
+    display: none;
+}
+
+.review-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    flex: 0 0 300px;
+    min-height: 220px;
+    margin: 0;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    scroll-snap-align: start;
+}
+
+.review-card blockquote {
+    font-size: 0.95rem;
     color: var(--text);
 }
 
-.review .meta {
-    margin-top: 10px;
+.review-card figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.8rem;
+    color: var(--text-faint);
+}
+
+.review-card figcaption strong {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
 }
 
 .review-summary {
@@ -1032,6 +1077,10 @@ svg {
 
     .form-row {
         grid-template-columns: 1fr;
+    }
+
+    .review-card {
+        flex-basis: 85%;
     }
 
     .demo {
