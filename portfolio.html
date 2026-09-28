@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Featured Portfolio - AI Client Manager</title>
-    <meta name="description" content="Showcase of high-performance SaaS platforms, AI products, logistics dashboards, and mobile applications engineered for global clients.">
+    <title>Work - AI Client Manager</title>
+    <meta name="description" content="Selected client projects: an AI DM bot, a coaching platform and a streaming network.">
     <script>
-        (function() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            }
-        })();
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
     </script>
     <link rel="stylesheet" href="style.css">
 
@@ -27,461 +22,72 @@
     </script>
 </head>
 <body>
-    <!-- Background Decorators -->
-    <div class="bg-decorations">
-        <div class="bg-mesh"></div>
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-
-    <!-- Sticky Navigation Header -->
-    <header class="main-header">
-        <div class="header-content">
-            <a href="index.html" class="logo-container">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M19 8l.9 1.9 1.9.9-1.9.9-.9 1.9-.9-1.9-1.9-.9 1.9-.9z" fill="currentColor" stroke="none"></path>
-                        <path d="M18 16l.5 1.1 1.1.5-1.1.5-.5 1.1-.5-1.1-1.1-.5 1.1-.5z" fill="currentColor" stroke="none"></path>
-                    </svg>
-                </div>
-                <div class="logo-text-wrapper">
-                    <span class="logo-text">AI Client Manager</span>
-                    <span class="logo-subtitle">Showcase</span>
-                </div>
-            </a>
-            
-            <nav class="main-nav" id="main-nav">
-                <ul>
-                    <li><a href="index.html">Workspace</a></li>
-                    <li><a href="service.html">Services</a></li>
-                    <li><a href="portfolio.html" class="active">Portfolio</a></li>
-                    <li><a href="testimonials.html">Testimonials</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a href="index.html" class="brand">AI Client Manager</a>
+            <nav class="site-nav" id="main-nav">
+                <a href="index.html">Chat</a>
+                <a href="service.html">Services</a>
+                <a href="portfolio.html" class="active">Work</a>
+                <a href="testimonials.html">Reviews</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
             </nav>
-
-            <div class="header-right">
-                <div class="badge-ai">
-                    <div class="badge-dot"></div>
-                    <span>AI Assistant</span>
-                </div>
-                <div class="theme-toggle">
-                    <button id="theme-toggle" title="Toggle Light/Dark Theme">
-                        <svg id="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                        <svg id="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    </button>
-                </div>
-                <button class="mobile-menu-toggle" id="mobile-menu-toggle" title="Toggle menu">☰</button>
+            <div class="site-header-actions">
+                <button class="icon-btn" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                </button>
+                <button class="icon-btn mobile-only" id="mobile-menu-toggle" title="Menu" aria-label="Menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Portfolio Main Workspace -->
-    <main class="page-container">
-        <section class="page-hero">
-            <div class="hero-badge">Production Deployments</div>
-            <h1>Our Featured Creations</h1>
-            <p>Explore a selection of high-performance digital products, interactive interfaces, and automated AI services engineered for global clients.</p>
-        </section>
-
-        <!-- Category Filter Tabs -->
-        <div class="filter-tabs-container">
-            <div class="filter-tabs" id="portfolio-filter-tabs">
-                <button class="filter-tab active" data-category="all">All Projects (3)</button>
-                <button class="filter-tab" data-category="ai">AI &amp; Auto-DM</button>
-                <button class="filter-tab" data-category="health">HealthTech</button>
-                <button class="filter-tab" data-category="media">OTT &amp; Media</button>
-            </div>
+    <main class="page">
+        <h1 class="page-title">Work</h1>
+        <p class="page-lead">A few projects that are live in production.</p>
+        <div class="projects">
+            <article class="project">
+                <h2>Auto-DM AI bot</h2>
+                <p>Auto-replies to DMs, story mentions and comments on Instagram, WhatsApp, Messenger and X. It qualifies leads and books appointments around the clock.</p>
+                <div class="project-links">
+                    <a href="autodm-simulator.html" class="btn btn-primary">Try the demo</a>
+                    <a href="index.html?prompt=I%20want%20to%20build%20an%20Auto-DM%20AI%20chatbot%20for%20social%20media%20platforms" class="btn">Estimate something similar</a>
+                </div>
+            </article>
+            <article class="project">
+                <h2>Edu Garcia Movimiento</h2>
+                <a href="https://edumovimiento.com/" target="_blank" rel="noopener noreferrer" class="project-url">edumovimiento.com</a>
+                <p>An online movement coaching platform with structured mobility courses, video progressions and 1-on-1 consultation booking.</p>
+                <div class="project-links">
+                    <a href="https://edumovimiento.com/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Visit site <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                    <a href="index.html?prompt=I%20want%20to%20build%20a%20coaching%20platform%20like%20Edu%20Garcia%20Movimiento" class="btn">Estimate something similar</a>
+                </div>
+            </article>
+            <article class="project">
+                <h2>CultureBox TV</h2>
+                <a href="https://cultureboxtv.com/" target="_blank" rel="noopener noreferrer" class="project-url">cultureboxtv.com</a>
+                <p>A streaming network for multicultural film, live music and creator series, available on web, mobile and TV.</p>
+                <div class="project-links">
+                    <a href="https://cultureboxtv.com/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Visit site <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                    <a href="index.html?prompt=I%20want%20to%20build%20an%20OTT%20streaming%20platform%20like%20CultureBox%20TV" class="btn">Estimate something similar</a>
+                </div>
+            </article>
         </div>
-
-                <!-- Portfolio Showcase (Spacious Rectangular Projects with Custom Backgrounds) -->
-        <section class="portfolio-showcase" id="portfolio-grid">
-
-            <!-- Project 1: Auto-DM AI Bot -->
-            <article class="project-feature-card project-card-autodm clickable-project-card" id="project-autodm" data-category="ai" data-project-url="autodm-simulator.html" tabindex="0" role="link" aria-label="Open Auto-DM AI Bot Simulator">
-                <div class="project-card-bg" aria-hidden="true"></div>
-                <div class="project-card-overlay" aria-hidden="true"></div>
-                <div class="project-card-content">
-                    <!-- Heading at the top -->
-                    <div class="project-card-header">
-                        <h2 class="project-header-title">Auto-DM AI Bot — Multi-Platform Social Auto-Reply</h2>
-                        
-                    </div>
-
-                    <!-- Below it: short description -->
-                    <p class="project-description">
-                        Autonomous AI bot that auto-replies to DMs, story mentions, and comments across Instagram, WhatsApp, Messenger, and X 24/7 to qualify leads and book appointments with zero delay.
-                    </p>
-
-                    <!-- Below description: Impact Metrics -->
-                    <div class="project-metrics-line">
-                        <span class="metric-val">40% Higher Conversion Rate</span>
-                        <span class="metric-divider">|</span>
-                        <span class="metric-val">#1 Social Auto-DM Bot</span>
-                        <span class="metric-divider">|</span>
-                        <span class="metric-val">50K+ Inquiries Automated / Day</span>
-                    </div>
-
-                    <!-- Below it: project link btns -->
-                    <div class="project-cta-row">
-                        <a href="autodm-simulator.html" target="_blank" rel="noopener noreferrer" class="btn-primary-launch">
-                            <span>Test Live Simulator &rarr;</span>
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                        </a>
-                        <a href="index.html?prompt=I%20want%20to%20build%20an%20Auto-DM%20AI%20Chatbot%20for%20social%20media%20platforms" target="_blank" rel="noopener noreferrer" class="btn-secondary-scope">
-                            <span>Estimate Bot Scope</span>
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Project 2: Edu Garcia Movimiento -->
-            <article class="project-feature-card project-card-edumovimiento clickable-project-card" id="project-edumovimiento" data-category="health" data-project-url="https://edumovimiento.com/" tabindex="0" role="link" aria-label="Visit Edu Garcia Movimiento">
-                <div class="project-card-bg" aria-hidden="true"></div>
-                <div class="project-card-overlay" aria-hidden="true"></div>
-                <div class="project-card-content">
-                    <!-- Heading at the top -->
-                    <div class="project-card-header">
-                        <h2 class="project-header-title">Edu Garcia Movimiento — Movement &amp; Coaching Platform</h2>
-                        
-                        <div class="project-url-row">
-                            <a href="https://edumovimiento.com/" target="_blank" rel="noopener noreferrer" class="project-url-link">
-                                <span>https://edumovimiento.com/</span>
-                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Below it: short description -->
-                    <p class="project-description">
-                        Digital movement campus providing structured joint mobility courses, video progressions, and 1-on-1 private consultation booking for global clients.
-                    </p>
-
-                    <!-- Below description: Impact Metrics -->
-                    <div class="project-metrics-line">
-                        <span class="metric-val">30% Higher Conversion Rate</span>
-                        <span class="metric-divider">|</span>
-                        <span class="metric-val">#1 Fitness App</span>
-                        <span class="metric-divider">|</span>
-                        <span class="metric-val">30K+ Orders per Day via App</span>
-                    </div>
-
-                    <!-- Below it: project link btns -->
-                    <div class="project-cta-row">
-                        <a href="https://edumovimiento.com/" target="_blank" rel="noopener noreferrer" class="btn-primary-launch">
-                            <span>Visit edumovimiento.com</span>
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                        </a>
-                        <a href="index.html?prompt=I%20want%20to%20build%20a%20platform%20like%20Edu%20Garcia%20Movimiento%20Fitness" target="_blank" rel="noopener noreferrer" class="btn-secondary-scope">
-                            <span>Estimate Similar App</span>
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Project 3: CultureBox TV Network -->
-            <article class="project-feature-card project-card-culturebox clickable-project-card" id="project-culturebox" data-category="media" data-project-url="https://cultureboxtv.com/" tabindex="0" role="link" aria-label="Watch CultureBox TV Live">
-                <div class="project-card-bg" aria-hidden="true"></div>
-                <div class="project-card-overlay" aria-hidden="true"></div>
-                <div class="project-card-content">
-                    <!-- Heading at the top -->
-                    <div class="project-card-header">
-                        <h2 class="project-header-title">CultureBox TV Network — Multicultural OTT Streaming</h2>
-                        
-                        <div class="project-url-row">
-                            <a href="https://cultureboxtv.com/" target="_blank" rel="noopener noreferrer" class="project-url-link">
-                                <span>https://cultureboxtv.com/</span>
-                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Below it: short description -->
-                    <p class="project-description">
-                        Global OTT television network delivering multicultural cinema, live music broadcasts, and creator series across any device.
-                    </p>
-
-                    <!-- Below description: Impact Metrics -->
-                    <div class="project-metrics-line">
-                        <span class="metric-val">4K Ultra-HD Streaming</span>
-                        <span class="metric-divider">|</span>
-                        <span class="metric-val">#1 Multicultural OTT Network</span>
-                        <span class="metric-divider">|</span>
-                        <span class="metric-val">500K+ Active Viewers</span>
-                    </div>
-
-                    <!-- Below it: project link btns -->
-                    <div class="project-cta-row">
-                        <a href="https://cultureboxtv.com/" target="_blank" rel="noopener noreferrer" class="btn-primary-launch">
-                            <span>Watch CultureBox TV Live</span>
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                        </a>
-                        <a href="index.html?prompt=I%20want%20to%20build%20an%20OTT%20Streaming%20Platform%20like%20CultureBox%20TV" target="_blank" rel="noopener noreferrer" class="btn-secondary-scope">
-                            <span>Estimate Similar App</span>
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-
-        </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <div class="logo-container" style="margin-bottom: 12px;">
-                    <div class="logo-icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M19 8l.9 1.9 1.9.9-1.9.9-.9 1.9-.9-1.9-1.9-.9 1.9-.9z" fill="currentColor" stroke="none"></path>
-                            <path d="M18 16l.5 1.1 1.1.5-1.1.5-.5 1.1-.5-1.1-1.1-.5 1.1-.5z" fill="currentColor" stroke="none"></path>
-                        </svg>
-                    </div>
-                    <span class="logo-text">AI Client Manager</span>
-                </div>
-                <p>Automating scope extraction, project cost modeling, and proposal generation using artificial intelligence and modern SaaS design standards.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Navigation</h4>
-                <ul>
-                    <li><a href="index.html">AI Workspace</a></li>
-                    <li><a href="service.html">Services Grid</a></li>
-                    <li><a href="portfolio.html">Featured Portfolio</a></li>
-                    <li><a href="testimonials.html">Client Testimonials</a></li>
-                    <li><a href="about.html">About Agency</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Direct Contact</h4>
-                <ul>
-                    <li><a href="mailto:bhaveshupadhyay929@gmail.com">bhaveshupadhyay929@gmail.com</a></li>
-                    <li><a href="contact.html">Contact Dashboard</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Capabilities</h4>
-                <ul>
-                    <li><a href="service.html">Auto-DM AI Chatbots</a></li>
-                    <li><a href="service.html">SaaS Engineering</a></li>
-                    <li><a href="service.html">FastAPI & Node APIs</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 AI Client Manager. All rights reserved.</p>
-            <div class="social-links">
-                <a href="https://www.fiverr.com/coderandroid" target="_blank" rel="noopener noreferrer" title="Fiverr Profile - coderandroid" class="fiverr-badge-link">
-                    <svg viewBox="0 0 508 508">
-                        <circle cx="254" cy="254" r="254" fill="#1dbf73"/>
-                        <circle cx="314.14" cy="161.21" r="26.87" fill="#ffffff"/>
-                        <path fill="#ffffff" d="M344.04,206.68h-123V198.62c0-15.83,15.83-16.13,23.89-16.13,9.25,0,13.44.9,13.44.9v-43.6a155.21,155.21,0,0,0-19.71-1.19c-25.68,0-73.16,7.16-73.16,61.51v7.22h-22.4v40.31h22.4v85.1h-20.9v40.31H245.51V332.39H221v-85.1h67.15v85.1h-20.87v40.31H364.95V332.39H344.04Z"/>
-                    </svg>
-                    <span>Fiverr</span>
-                </a>
+    <footer class="site-footer">
+        <div class="site-footer-inner">
+            <span>&copy; 2026 AI Client Manager</span>
+            <div class="site-footer-links">
+                <a href="mailto:bhaveshupadhyay929@gmail.com">Email</a>
+                <a href="https://www.fiverr.com/coderandroid" target="_blank" rel="noopener noreferrer">Fiverr</a>
             </div>
         </div>
     </footer>
 
-    <!-- Floating Interactive Chatbox (Bottom-Right) -->
-    <div class="floating-chat-container" id="floating-chat-container">
-        <!-- Floating Chatbox Window -->
-        <div class="floating-chat-window" id="floating-chat-window" aria-hidden="true">
-            <div class="floating-window-header">
-                <div class="floating-window-user">
-                    <div class="floating-window-avatar">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-                            <circle cx="12" cy="5" r="2"></circle>
-                            <path d="M12 7v4"></path>
-                            <line x1="8" y1="16" x2="8" y2="16"></line>
-                            <line x1="16" y1="16" x2="16" y2="16"></line>
-                        </svg>
-                        <span class="floating-avatar-dot"></span>
-                    </div>
-                    <div class="floating-window-meta">
-                        <h4>AI Client Assistant</h4>
-                        <span>Online &bull; Available 24/7</span>
-                    </div>
-                </div>
-                <button type="button" class="floating-window-close" onclick="toggleFloatingChat(false)" title="Close chat window" aria-label="Close chat">
-                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Chat Message List -->
-            <div class="floating-chat-body" id="floating-chat-body">
-                <div class="floating-chat-bubble bot">
-                    <div class="floating-bot-tag">AI Assistant</div>
-                    Hello. How can I assist you with your project today? You can ask about our development services, estimate a project scope, or explore our production portfolio.
-                </div>
-
-                <!-- Quick Action Chips (No emojis) -->
-                <div class="floating-quick-chips" id="floating-quick-chips">
-                    <button type="button" class="floating-chip" onclick="sendFloatingPrompt('What are your development rates and turnaround timeline?')">Rates &amp; Timeline</button>
-                    <button type="button" class="floating-chip" onclick="sendFloatingPrompt('How can I estimate my project scope?')">Estimate Project</button>
-                    <button type="button" class="floating-chip" onclick="sendFloatingPrompt('What services and technologies do you specialize in?')">Specialized Services</button>
-                    <button type="button" class="floating-chip" onclick="sendFloatingPrompt('Can I hire you for custom development on Fiverr?')">Hire on Fiverr</button>
-                </div>
-            </div>
-
-            <!-- Chat Input Form -->
-            <form class="floating-chat-footer" onsubmit="handleFloatingSubmit(event)">
-                <input type="text" id="floating-chat-input" placeholder="Type your inquiry..." maxlength="160" autocomplete="off">
-                <button type="submit" class="floating-chat-send" title="Send message" aria-label="Send message">
-                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
-                </button>
-            </form>
-        </div>
-
-        <!-- Floating Action Button & Tooltip -->
-        <div class="floating-chat-controls">
-            <button type="button" class="floating-chat-btn" id="floating-chat-btn" onclick="toggleFloatingChat()" title="Chat with AI Assistant" aria-label="Open AI Assistant chat window">
-                <span class="floating-ping-ring"></span>
-                <span class="floating-ping-dot"></span>
-                <svg class="floating-chat-icon icon-msg" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                </svg>
-                <svg class="floating-chat-icon icon-close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-                <span class="floating-btn-pill">AI</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Scripts for Portfolio Page -->
-    <script>
-        // Floating Interactive Chatbox Controller
-        let isFloatingChatOpen = false;
-
-        function toggleFloatingChat(forceState) {
-            const win = document.getElementById('floating-chat-window');
-            const btn = document.getElementById('floating-chat-btn');
-            const tooltip = document.getElementById('floating-chat-tooltip');
-            if (!win) return;
-
-            if (typeof forceState === 'boolean') {
-                isFloatingChatOpen = forceState;
-            } else {
-                isFloatingChatOpen = !isFloatingChatOpen;
-            }
-
-            if (isFloatingChatOpen) {
-                win.classList.add('open');
-                win.setAttribute('aria-hidden', 'false');
-                if (btn) {
-                    const iconMsg = btn.querySelector('.icon-msg');
-                    const iconClose = btn.querySelector('.icon-close');
-                    if (iconMsg) iconMsg.style.display = 'none';
-                    if (iconClose) iconClose.style.display = 'block';
-                }
-                if (tooltip) tooltip.style.display = 'none';
-                setTimeout(() => {
-                    const input = document.getElementById('floating-chat-input');
-                    if (input) input.focus();
-                }, 200);
-            } else {
-                win.classList.remove('open');
-                win.setAttribute('aria-hidden', 'true');
-                if (btn) {
-                    const iconMsg = btn.querySelector('.icon-msg');
-                    const iconClose = btn.querySelector('.icon-close');
-                    if (iconMsg) iconMsg.style.display = 'block';
-                    if (iconClose) iconClose.style.display = 'none';
-                }
-            }
-        }
-
-        function getFloatingBotReply(query) {
-            const lower = query.toLowerCase();
-            if (lower.includes('rate') || lower.includes('cost') || lower.includes('price') || lower.includes('pricing') || lower.includes('fee') || lower.includes('package') || lower.includes('quote') || lower.includes('how much')) {
-                return 'Custom engineering projects typically range from <strong>$350 to $1,500</strong> depending on API integrations and scope. Turnaround is typically <strong>3 to 7 business days</strong>. You can estimate your project in our <a href="index.html" style="color: var(--primary-light); font-weight: 700;">AI Workspace</a>.';
-            } else if (lower.includes('timeline') || lower.includes('turnaround') || lower.includes('delivery') || lower.includes('how long') || lower.includes('days')) {
-                return 'Standard delivery turnaround is <strong>3 to 5 business days</strong> for automated bots and integrations, and <strong>7 to 14 days</strong> for production web platforms. Milestone review staging is included throughout.';
-            } else if (lower.includes('scope') || lower.includes('estimate') || lower.includes('calculator') || lower.includes('workspace')) {
-                return 'You can launch our interactive <a href="index.html" style="color: var(--primary-light); font-weight: 700;">AI Scope Calculator</a> to configure features, choose tech tiers, and calculate real-time cost projections.';
-            } else if (lower.includes('service') || lower.includes('specializ') || lower.includes('stack') || lower.includes('tech') || lower.includes('build')) {
-                return 'We specialize in AI automations, React frontends, FastAPI and Node.js microservices, Stripe billing integrations, Cloudflare edge hosting, and video streaming. Explore our <a href="service.html" style="color: var(--primary-light); font-weight: 700;">Services Page</a>.';
-            } else if (lower.includes('fiverr') || lower.includes('hire') || lower.includes('contract') || lower.includes('freelance')) {
-                return 'You can hire our verified profile securely on <a href="https://www.fiverr.com/coderandroid" target="_blank" style="color: #10b981; font-weight: 700;">Fiverr (coderandroid)</a> with milestone escrow, or get in touch through our <a href="contact.html" style="color: var(--primary-light); font-weight: 700;">Contact Form</a>.';
-            } else if (lower.includes('portfolio') || lower.includes('project') || lower.includes('work') || lower.includes('example')) {
-                return 'Our production showcase on this page features the <strong>Auto-DM AI Bot</strong>, the <strong>Edu Garcia Movimiento</strong> healthtech campus, and the <strong>CultureBox TV</strong> streaming network.';
-            } else {
-                return 'Thank you for reaching out. Our engineering team is ready to build custom AI automations, SaaS products, and APIs. Contact us via our <a href="contact.html" style="color: var(--primary-light); font-weight: 700;">Contact Form</a> or order on <a href="https://www.fiverr.com/coderandroid" target="_blank" style="color: #10b981; font-weight: 700;">Fiverr</a>.';
-            }
-        }
-
-        function appendFloatingMessage(text, isUser = false) {
-            const body = document.getElementById('floating-chat-body');
-            if (!body) return;
-            const bubble = document.createElement('div');
-            bubble.className = `floating-chat-bubble ${isUser ? 'user' : 'bot'}`;
-            if (!isUser) {
-                bubble.innerHTML = `<div class="floating-bot-tag">AI Assistant</div>` + text;
-            } else {
-                bubble.textContent = text;
-            }
-            body.appendChild(bubble);
-            body.scrollTop = body.scrollHeight;
-        }
-
-        function showFloatingTyping() {
-            const body = document.getElementById('floating-chat-body');
-            if (!body) return null;
-            const typing = document.createElement('div');
-            typing.className = 'floating-chat-typing';
-            typing.id = 'floating-active-typing';
-            typing.innerHTML = '<span>Assistant is typing</span><div class="chatbox-typing-dots"><span></span><span></span><span></span></div>';
-            body.appendChild(typing);
-            body.scrollTop = body.scrollHeight;
-            return typing;
-        }
-
-        function removeFloatingTyping() {
-            const typing = document.getElementById('floating-active-typing');
-            if (typing) typing.remove();
-        }
-
-        function sendFloatingPrompt(text) {
-            appendFloatingMessage(text, true);
-            showFloatingTyping();
-            setTimeout(() => {
-                removeFloatingTyping();
-                appendFloatingMessage(getFloatingBotReply(text), false);
-            }, 350);
-        }
-
-        function handleFloatingSubmit(e) {
-            e.preventDefault();
-            const input = document.getElementById('floating-chat-input');
-            if (!input) return;
-            const val = input.value.trim();
-            if (!val) return;
-            input.value = '';
-
-            appendFloatingMessage(val, true);
-            showFloatingTyping();
-            setTimeout(() => {
-                removeFloatingTyping();
-                appendFloatingMessage(getFloatingBotReply(val), false);
-            }, 350);
-        }
-    </script>
     <script src="script.js"></script>
 </body>
 </html>
