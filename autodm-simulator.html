@@ -96,6 +96,8 @@
             web: { name: 'Website chat', text: 'Hi, this is the Auto-DM bot on your website. The same bot works on Instagram, WhatsApp, Messenger and X. Try a message below.' }
         };
         let currentSimChannel = 'instagram';
+        // Bumped on every channel switch so replies still pending from the old channel are dropped
+        let simGeneration = 0;
 
         const simBody = document.getElementById('sim-chat-body');
         const simInput = document.getElementById('sim-custom-input');
@@ -112,6 +114,7 @@
         }
 
         function switchSimChannel(channel) {
+            simGeneration++;
             currentSimChannel = channel;
             document.querySelectorAll('.demo-tab').forEach(tab => {
                 tab.classList.toggle('active', tab.dataset.channel === channel);
@@ -145,11 +148,13 @@
         }
 
         function sendSimMessage(text) {
+            const generation = simGeneration;
             appendSimMessage(escapeSimHtml(text), true);
             appendSimMessage('<span class="typing-dot"></span>', false);
             const typing = simBody.lastElementChild;
             setTimeout(() => {
                 typing.remove();
+                if (generation !== simGeneration) return;
                 appendSimMessage(getSimBotReply(text), false);
             }, 450);
         }

@@ -79,6 +79,10 @@ window.addEventListener('DOMContentLoaded', () => {
         // Pages link here with ?prompt=... to start a conversation
         const prefilledPrompt = new URLSearchParams(window.location.search).get('prompt');
         if (prefilledPrompt && chatInput) {
+            // Drop the parameter first so a reload or back navigation doesn't resend it
+            const url = new URL(window.location.href);
+            url.searchParams.delete('prompt');
+            history.replaceState(null, '', url);
             chatInput.value = prefilledPrompt;
             handleSend('url_parameter');
         }
@@ -98,7 +102,11 @@ if (themeToggle) {
         } else {
             document.documentElement.removeAttribute('data-theme');
         }
-        localStorage.setItem('theme', newTheme);
+        try {
+            localStorage.setItem('theme', newTheme);
+        } catch (e) {
+            console.warn('Could not save theme:', e);
+        }
         trackGAEvent('toggle_theme', { theme: newTheme });
     });
 }
@@ -414,11 +422,15 @@ function saveSessionToStorage() {
         });
     });
 
-    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({
-        messages: messages,
-        projectId: currentProjectId,
-        pendingActionType: pendingActionType
-    }));
+    try {
+        localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({
+            messages: messages,
+            projectId: currentProjectId,
+            pendingActionType: pendingActionType
+        }));
+    } catch (e) {
+        console.warn('Could not save chat session:', e);
+    }
 }
 
 function loadSessionFromStorage() {
